@@ -8,7 +8,12 @@ import { Plan } from "@/types/plan";
 interface FloatingPlansButtonProps {
   isRunning?: boolean;
   activeFocusSession?: FocusSessionResponseDto | null;
-  onStartPlan?: (title: string, minutes: number, planId?: string) => void;
+  onStartPlan?: (
+    title: string,
+    minutes: number,
+    planId?: string,
+    tagName?: string
+  ) => void;
 }
 
 export default function FloatingPlansButton({
@@ -36,7 +41,7 @@ export default function FloatingPlansButton({
 
   const handlePlanStart = (plan: Plan) => {
     if (onStartPlan) {
-      onStartPlan(plan.title, plan.duration || 25, plan.id);
+      onStartPlan(plan.title, plan.duration || 25, plan.id, plan.tagName);
     }
     setIsOpen(false);
   };

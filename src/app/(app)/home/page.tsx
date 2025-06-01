@@ -506,31 +506,41 @@ const TimerPage = () => {
   const handleStartPlan = (
     planTitle: string,
     minutes: number,
-    planId?: string
+    planId?: string,
+    planTagName?: string
   ) => {
     if (isRunning || activeFocusSession !== null) {
       return;
     }
+    // Mark the selected ToDo plan
     setSelectedPlanId(planId ?? null);
 
-    // Reset any existing selections
+    // Automatically select the ToDo tag if available
     setSelectedSessionTypeId(null);
-    setSelectedTags([]);
+    setSelectedTags(planTagName ? [planTagName] : []);
 
-    // Set custom timer with plan duration
+    // Set custom timer for plan duration
     setTimerMode("custom");
     const planDurationSeconds = minutes * 60;
+    setWorkDurationState(planDurationSeconds);
     setWorkDuration(planDurationSeconds);
     setUiMinutes(Math.floor(planDurationSeconds / 60));
     setUiSeconds(planDurationSeconds % 60);
     setIsRunning(false);
   };
 
+  const handleCancelPlan = () => {
+    if (activeFocusSession) return;
+    setSelectedPlanId(null);
+    setWorkDurationState(25 * 60);
+    resetState();
+  };
+
   const toggleTag = (tagName: string) => {
-    if (isRunning || activeFocusSession !== null) {
+    // Prevent tag changes during an active focus session or after selecting a plan
+    if (isRunning || activeFocusSession !== null || selectedPlanId !== null) {
       return;
     }
-
     setSelectedTags((prev) =>
       prev.includes(tagName)
         ? prev.filter((t) => t !== tagName)
@@ -611,6 +621,8 @@ const TimerPage = () => {
               isRunning={isRunning}
               activeFocusSession={activeFocusSession}
               onStartPlan={handleStartPlan}
+              selectedPlanId={selectedPlanId}
+              onCancelPlan={handleCancelPlan}
             />
 
             {/* Tags */}
