@@ -16,25 +16,8 @@ export function middleware(request: NextRequest) {
 
   // 1. Kullanıcı giriş yapmışsa (accessToken var):
   if (accessToken) {
-    // Eğer login veya register sayfasındaysa ve redirect parametresi varsa oraya yönlendir
+    // Eğer login veya register sayfasındaysa, /home'a yönlendir
     if (pathname === loginPath || pathname === registerPath) {
-      const redirectTo = request.nextUrl.searchParams.get("redirect");
-      if (redirectTo) {
-        try {
-          // URL decode et
-          const decodedRedirect = decodeURIComponent(redirectTo);
-          // Güvenli path kontrolü
-          if (
-            appProtectedPaths.some((path) => decodedRedirect.startsWith(path))
-          ) {
-            console.log("Middleware redirecting to:", decodedRedirect); // Debug
-            return NextResponse.redirect(new URL(decodedRedirect, request.url));
-          }
-        } catch (error) {
-          console.error("Redirect decode error:", error);
-        }
-      }
-      // Redirect parametresi yoksa veya geçersizse /home'a yönlendir
       return NextResponse.redirect(new URL(homePath, request.url));
     }
     // Eğer ana landing sayfasına ("/") gitmeye çalışıyorsa, /home'a yönlendir.
@@ -44,12 +27,9 @@ export function middleware(request: NextRequest) {
   }
   // 2. Kullanıcı giriş yapmamışsa (accessToken yok):
   else {
-    // Eğer korunmuş bir uygulama yoluna gitmeye çalışıyorsa, /login'e yönlendir ve current path'i redirect parametresi olarak ekle.
+    // Eğer korunmuş bir uygulama yoluna gitmeye çalışıyorsa, /login'e yönlendir.
     if (appProtectedPaths.some((path) => pathname.startsWith(path))) {
-      const loginUrl = new URL(loginPath, request.url);
-      loginUrl.searchParams.set("redirect", pathname);
-      console.log("Middleware redirecting to login with redirect:", pathname); // Debug
-      return NextResponse.redirect(loginUrl);
+      return NextResponse.redirect(new URL(loginPath, request.url));
     }
   }
 

@@ -82,25 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setAccessToken(newAccessToken);
     setUser(userData);
 
-    // URL'den redirect parametresini kontrol et
-    const urlParams = new URLSearchParams(window.location.search);
-    const redirectTo = urlParams.get("redirect");
-
-    // Güvenli redirect path'leri
-    const allowedPaths = ["/home", "/profile", "/plan", "/leaderboard"];
-
-    if (redirectTo) {
-      // URL decode et (%2f -> /)
-      const decodedRedirect = decodeURIComponent(redirectTo);
-      console.log("Redirect to:", decodedRedirect); // Debug için
-
-      if (allowedPaths.some((path) => decodedRedirect.startsWith(path))) {
-        router.push(decodedRedirect);
-        return;
-      }
-    }
-
-    // Default olarak home'a yönlendir
+    // Login sonrası direkt home'a yönlendir
     router.push("/home");
   };
 
