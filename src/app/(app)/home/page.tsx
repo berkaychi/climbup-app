@@ -54,6 +54,7 @@ const TimerPage = () => {
   const [editingTag, setEditingTag] = useState<TagDto | null>(null);
   const [editingSessionType, setEditingSessionType] =
     useState<SessionTypeResponseDto | null>(null);
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
   // Hooks
   const { tags: apiTags, isLoadingTags, tagError, mutateTags } = useTags();
@@ -82,7 +83,8 @@ const TimerPage = () => {
     selectedTags,
     apiTags || null,
     25 * 60, // Default work duration
-    timerMode
+    timerMode,
+    selectedPlanId ? parseInt(selectedPlanId) : null
   );
 
   // Forward declarations for handlers
@@ -177,9 +179,13 @@ const TimerPage = () => {
       return;
     }
 
-    setResetConfirmationType("session");
-    setShowResetConfirmModal(true);
-  }, [isUIBreakActive]);
+    if (activeFocusSession) {
+      setResetConfirmationType("session");
+      setShowResetConfirmModal(true);
+    } else {
+      resetState();
+    }
+  }, [isUIBreakActive, activeFocusSession]);
 
   const openCustomTimerModal = useCallback(() => {
     if (activeFocusSession && activeFocusSession.customDurationSeconds) {
@@ -287,23 +293,16 @@ const TimerPage = () => {
 
   const handleConfirmReset = async () => {
     setShowResetConfirmModal(false);
-
     if (resetConfirmationType === "uiBreak") {
       resetUIBreak();
-      return;
-    }
-
-    const resetState = () => {
-      resetSession();
-      setSelectedSessionTypeId(null);
+      setIsRunning(false);
       setTimerMode("idle");
+      setWorkDuration(25 * 60);
       setUiMinutes(25);
       setUiSeconds(0);
-      setIsRunning(false);
-      setWorkDuration(25 * 60);
-    };
-
-    if (activeFocusSession?.id) {
+      setSelectedSessionTypeId(null);
+      setSelectedTags([]);
+    } else if (resetConfirmationType === "session" && activeFocusSession) {
       const success = await cancelSession(activeFocusSession.id);
       if (success) {
         resetState();
@@ -311,6 +310,18 @@ const TimerPage = () => {
     } else {
       resetState();
     }
+  };
+
+  const resetState = () => {
+    setIsRunning(false);
+    setUiMinutes(25);
+    setUiSeconds(0);
+    setActiveFocusSession(null);
+    setSelectedSessionTypeId(null);
+    setSelectedTags([]);
+    setTimerMode("idle");
+    setWorkDuration(25 * 60);
+    resetUIBreak();
   };
 
   const handleCancelReset = () => {
@@ -489,10 +500,15 @@ const TimerPage = () => {
     setIsManagementPanelOpen(true);
   };
 
-  const handleStartPlan = (planTitle: string, minutes: number) => {
+  const handleStartPlan = (
+    planTitle: string,
+    minutes: number,
+    planId?: string
+  ) => {
     if (isRunning || activeFocusSession !== null) {
       return;
     }
+    setSelectedPlanId(planId ?? null);
 
     // Reset any existing selections
     setSelectedSessionTypeId(null);

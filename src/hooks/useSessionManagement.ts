@@ -17,7 +17,8 @@ export const useSessionManagement = (
   selectedTags: string[],
   apiTags: TagDto[] | null,
   workDuration: number,
-  timerMode: string
+  timerMode: string,
+  toDoItemId: number | null = null
 ) => {
   const [activeFocusSession, setActiveFocusSession] =
     useState<FocusSessionResponseDto | null>(null);
@@ -92,6 +93,11 @@ export const useSessionManagement = (
       } else {
         console.error("Cannot start timer: No valid session mode selected");
         return null;
+      }
+
+      // Attach ToDo Item ID if provided
+      if (toDoItemId != null) {
+        createDto.toDoItemId = toDoItemId;
       }
 
       const response = await fetchWithAuth(

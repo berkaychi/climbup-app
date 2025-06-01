@@ -1,11 +1,12 @@
 "use client";
 
 import { FocusSessionResponseDto } from "../../types/focusSession";
+import { useDailyPlans } from "@/hooks/usePlans";
 
 interface ContextSuggestionProps {
   isRunning?: boolean;
   activeFocusSession?: FocusSessionResponseDto | null;
-  onStartPlan?: (planTitle: string, minutes: number) => void;
+  onStartPlan?: (planTitle: string, minutes: number, planId: string) => void;
 }
 
 export default function ContextSuggestion({
@@ -13,60 +14,46 @@ export default function ContextSuggestion({
   activeFocusSession = null,
   onStartPlan,
 }: ContextSuggestionProps) {
-  // Mock: En yakın planı getir (gerçekte API'den gelecek)
-  const getNextPlan = () => {
-    const currentHour = new Date().getHours();
+  // Fetch today's plans and suggest the next incomplete one
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  const todayStr = `${yyyy}-${mm}-${dd}`;
+  const {
+    dailyPlans,
+    isLoading: loadingPlans,
+    error: plansError,
+  } = useDailyPlans(todayStr);
 
-    // Saate göre smart suggestion
-    if (currentHour >= 8 && currentHour < 12) {
-      return {
-        title: "Matematik Çalışması",
-        minutes: 45,
-        emoji: "📐",
-        reason: "sabah odaklanma zamanı",
-      };
-    } else if (currentHour >= 12 && currentHour < 17) {
-      return {
-        title: "Proje Hazırlığı",
-        minutes: 60,
-        emoji: "💼",
-        reason: "öğleden sonra prodüktivite",
-      };
-    } else if (currentHour >= 17 && currentHour < 21) {
-      return {
-        title: "Kitap Okuma",
-        minutes: 30,
-        emoji: "📚",
-        reason: "akşam dinlendirici aktivite",
-      };
-    } else {
-      return null; // Gece geç saatlerde öneri yok
-    }
-  };
-
-  const nextPlan = getNextPlan();
-
-  if (!nextPlan || isRunning || activeFocusSession) {
+  // If still loading, error occurred, or data is absent, do not show suggestion
+  if (loadingPlans || plansError || !dailyPlans) {
     return null;
   }
 
+  const incompletePlans = dailyPlans.plans.filter((plan) => !plan.isCompleted);
+  if (incompletePlans.length === 0 || isRunning || activeFocusSession) {
+    return null;
+  }
+  const nextPlan = incompletePlans[0];
+
   const handleStartSuggestion = () => {
     if (onStartPlan) {
-      onStartPlan(nextPlan.title, nextPlan.minutes);
+      onStartPlan(nextPlan.title, nextPlan.duration, nextPlan.id);
     }
   };
 
   return (
     <div className="flex justify-center mb-6">
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-full px-4 py-2 flex items-center gap-3 transition-all duration-200 hover:shadow-md hover:scale-105 max-w-[90vw] mx-2">
-        <span className="text-lg flex-shrink-0">{nextPlan.emoji}</span>
+        <span className="text-lg flex-shrink-0">📋</span>
         <div className="text-sm flex-1 min-w-0">
           <span className="font-medium text-gray-800 dark:text-gray-200">
             {nextPlan.title}
           </span>
           <span className="text-gray-600 dark:text-gray-400 mx-2">•</span>
           <span className="text-gray-600 dark:text-gray-400">
-            {nextPlan.minutes}dk • {nextPlan.reason}
+            {nextPlan.duration}dk
           </span>
         </div>
         <button

@@ -2,20 +2,13 @@
 
 import { useState } from "react";
 import { FocusSessionResponseDto } from "../../types/focusSession";
-
-interface PlanItem {
-  id: number;
-  title: string;
-  minutes: number;
-  emoji: string;
-  priority: "high" | "medium" | "low";
-  isCompleted: boolean;
-}
+import { useDailyPlans } from "@/hooks/usePlans";
+import { Plan } from "@/types/plan";
 
 interface FloatingPlansButtonProps {
   isRunning?: boolean;
   activeFocusSession?: FocusSessionResponseDto | null;
-  onStartPlan?: (title: string, minutes: number) => void;
+  onStartPlan?: (title: string, minutes: number, planId?: string) => void;
 }
 
 export default function FloatingPlansButton({
@@ -25,60 +18,28 @@ export default function FloatingPlansButton({
 }: FloatingPlansButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Mock plans
-  const plans: PlanItem[] = [
-    {
-      id: 1,
-      title: "Matematik Çalışması",
-      minutes: 45,
-      emoji: "📐",
-      priority: "high",
-      isCompleted: false,
-    },
-    {
-      id: 2,
-      title: "Proje Hazırlığı",
-      minutes: 60,
-      emoji: "💼",
-      priority: "high",
-      isCompleted: false,
-    },
-    {
-      id: 3,
-      title: "İngilizce Kelime",
-      minutes: 25,
-      emoji: "🇬🇧",
-      priority: "medium",
-      isCompleted: true,
-    },
-    {
-      id: 4,
-      title: "Kitap Okuma",
-      minutes: 30,
-      emoji: "📚",
-      priority: "low",
-      isCompleted: false,
-    },
-  ];
+  // Bugünün tarihini ISO formatında al
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  const todayStr = `${yyyy}-${mm}-${dd}`;
 
-  const activePlans = plans.filter((p) => !p.isCompleted);
-  const priorityColor = {
-    high: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
-    medium:
-      "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
-    low: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-  };
+  // Bugüne ait planları çek
+  const { dailyPlans, isLoading } = useDailyPlans(todayStr);
 
-  const handlePlanStart = (plan: PlanItem) => {
+  // Sadece tamamlanmamış planlar
+  const activePlans: Plan[] =
+    dailyPlans && Array.isArray(dailyPlans.plans)
+      ? dailyPlans.plans.filter((p: Plan) => !p.isCompleted)
+      : [];
+
+  const handlePlanStart = (plan: Plan) => {
     if (onStartPlan) {
-      onStartPlan(plan.title, plan.minutes);
+      onStartPlan(plan.title, plan.duration || 25, plan.id);
     }
     setIsOpen(false);
   };
-
-  if (activePlans.length === 0) {
-    return null;
-  }
 
   return (
     <>
@@ -143,41 +104,53 @@ export default function FloatingPlansButton({
 
             {/* Plans List */}
             <div className="max-h-64 overflow-y-auto">
-              {activePlans.map((plan) => (
-                <div
-                  key={plan.id}
-                  className="p-3 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/50"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 flex-1">
-                      <span className="text-lg">{plan.emoji}</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
-                            {plan.title}
-                          </h4>
-                          <span
-                            className={`px-2 py-0.5 text-xs rounded-full ${
-                              priorityColor[plan.priority]
-                            }`}
-                          >
-                            {plan.priority}
-                          </span>
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          {plan.minutes} dakika
+              {isLoading ? (
+                <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                  Yükleniyor...
+                </div>
+              ) : activePlans.length > 0 ? (
+                activePlans.map((plan: Plan) => (
+                  <div
+                    key={plan.id}
+                    className="p-3 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 flex-1">
+                        <span className="text-lg">📋</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
+                              {plan.title}
+                            </h4>
+                            {plan.tagName && (
+                              <span
+                                className={`px-2 py-0.5 text-xs rounded-full ${
+                                  plan.color || "bg-gray-200"
+                                }`}
+                              >
+                                {plan.tagName}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {plan.duration || "-"} dakika
+                          </div>
                         </div>
                       </div>
+                      <button
+                        onClick={() => handlePlanStart(plan)}
+                        className="ml-2 px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded-full transition-colors"
+                      >
+                        Başlat
+                      </button>
                     </div>
-                    <button
-                      onClick={() => handlePlanStart(plan)}
-                      className="ml-2 px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded-full transition-colors"
-                    >
-                      Başlat
-                    </button>
                   </div>
+                ))
+              ) : (
+                <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                  Bugüne ait aktif plan bulunmuyor.
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Footer */}

@@ -453,9 +453,9 @@ const ProfilePage = () => {
             </h3>
             <div className="space-y-4">
               {tagStats.slice(0, 5).map((tag) => (
-                <div key={tag.tagId} className="flex items-center">
+                <div key={tag.tagId} className="flex items-stretch">
                   <div
-                    className="w-2 h-10 rounded-l-md"
+                    className="w-2 h-full rounded-l-md"
                     style={{ backgroundColor: tag.tagColor }}
                   ></div>
                   <div
