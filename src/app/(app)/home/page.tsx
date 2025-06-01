@@ -55,6 +55,8 @@ const TimerPage = () => {
   const [editingSessionType, setEditingSessionType] =
     useState<SessionTypeResponseDto | null>(null);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  // Work duration state for custom and session durations
+  const [workDurationState, setWorkDurationState] = useState<number>(25 * 60);
 
   // Hooks
   const { tags: apiTags, isLoadingTags, tagError, mutateTags } = useTags();
@@ -82,7 +84,7 @@ const TimerPage = () => {
     selectedSessionTypeId,
     selectedTags,
     apiTags || null,
-    25 * 60, // Default work duration
+    workDurationState, // Dynamic work duration
     timerMode,
     selectedPlanId ? parseInt(selectedPlanId) : null
   );
@@ -338,6 +340,7 @@ const TimerPage = () => {
     setTimerMode("custom");
     setSelectedSessionTypeId(null);
     setWorkDuration(customDurationSeconds);
+    setWorkDurationState(customDurationSeconds);
     setUiMinutes(Math.floor(customDurationSeconds / 60));
     setUiSeconds(customDurationSeconds % 60);
     setIsRunning(false);

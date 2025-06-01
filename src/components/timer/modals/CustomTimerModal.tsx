@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface CustomTimerModalProps {
   isOpen: boolean;
@@ -16,7 +16,12 @@ export default function CustomTimerModal({
   onSave,
 }: CustomTimerModalProps) {
   const [customWorkDurationInput, setCustomWorkDurationInput] =
-    useState(initialDuration);
+    useState<string>(initialDuration.toString());
+
+  // Reset input when modal opens or initialDuration changes
+  useEffect(() => {
+    setCustomWorkDurationInput(initialDuration.toString());
+  }, [initialDuration, isOpen]);
 
   if (!isOpen) return null;
 
@@ -61,13 +66,7 @@ export default function CustomTimerModal({
               <input
                 type="number"
                 value={customWorkDurationInput}
-                onChange={(e) => {
-                  const newDuration = Math.min(
-                    Math.max(parseInt(e.target.value) || 1, 1),
-                    180
-                  );
-                  setCustomWorkDurationInput(newDuration);
-                }}
+                onChange={(e) => setCustomWorkDurationInput(e.target.value)}
                 min="1"
                 max="180"
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-lg font-medium text-center bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
@@ -96,9 +95,9 @@ export default function CustomTimerModal({
               {[15, 25, 45, 60].map((preset) => (
                 <button
                   key={preset}
-                  onClick={() => setCustomWorkDurationInput(preset)}
+                  onClick={() => setCustomWorkDurationInput(preset.toString())}
                   className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    customWorkDurationInput === preset
+                    customWorkDurationInput === preset.toString()
                       ? "bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 border-2 border-orange-300 dark:border-orange-600"
                       : "bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600"
                   }`}
@@ -116,13 +115,13 @@ export default function CustomTimerModal({
                 Önizleme
               </div>
               <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                {Math.floor(customWorkDurationInput)
+                {(Number(customWorkDurationInput) || 0)
                   .toString()
                   .padStart(2, "0")}
                 :00
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                {customWorkDurationInput} dakikalık çalışma süresi
+                {customWorkDurationInput || 0} dakikalık çalışma süresi
               </div>
             </div>
           </div>
@@ -136,9 +135,12 @@ export default function CustomTimerModal({
             İptal
           </button>
           <button
-            onClick={() => onSave(customWorkDurationInput)}
+            onClick={() => onSave(Number(customWorkDurationInput))}
             disabled={
-              customWorkDurationInput < 1 || customWorkDurationInput > 180
+              !customWorkDurationInput ||
+              isNaN(Number(customWorkDurationInput)) ||
+              Number(customWorkDurationInput) < 1 ||
+              Number(customWorkDurationInput) > 180
             }
             className="flex-1 px-6 py-3 text-white rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105 font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             style={{ backgroundColor: "#F96943" }}
