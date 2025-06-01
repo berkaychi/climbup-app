@@ -19,13 +19,22 @@ export function middleware(request: NextRequest) {
     // Eğer login veya register sayfasındaysa ve redirect parametresi varsa oraya yönlendir
     if (pathname === loginPath || pathname === registerPath) {
       const redirectTo = request.nextUrl.searchParams.get("redirect");
-      if (
-        redirectTo &&
-        appProtectedPaths.some((path) => redirectTo.startsWith(path))
-      ) {
-        return NextResponse.redirect(new URL(redirectTo, request.url));
+      if (redirectTo) {
+        try {
+          // URL decode et
+          const decodedRedirect = decodeURIComponent(redirectTo);
+          // Güvenli path kontrolü
+          if (
+            appProtectedPaths.some((path) => decodedRedirect.startsWith(path))
+          ) {
+            console.log("Middleware redirecting to:", decodedRedirect); // Debug
+            return NextResponse.redirect(new URL(decodedRedirect, request.url));
+          }
+        } catch (error) {
+          console.error("Redirect decode error:", error);
+        }
       }
-      // Redirect parametresi yoksa /home'a yönlendir
+      // Redirect parametresi yoksa veya geçersizse /home'a yönlendir
       return NextResponse.redirect(new URL(homePath, request.url));
     }
     // Eğer ana landing sayfasına ("/") gitmeye çalışıyorsa, /home'a yönlendir.
@@ -39,6 +48,7 @@ export function middleware(request: NextRequest) {
     if (appProtectedPaths.some((path) => pathname.startsWith(path))) {
       const loginUrl = new URL(loginPath, request.url);
       loginUrl.searchParams.set("redirect", pathname);
+      console.log("Middleware redirecting to login with redirect:", pathname); // Debug
       return NextResponse.redirect(loginUrl);
     }
   }

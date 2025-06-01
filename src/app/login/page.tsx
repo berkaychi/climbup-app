@@ -20,6 +20,8 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
+      console.log("Login attempt started"); // Debug
+
       const response = await fetch(
         "https://climbupapi.duckdns.org/api/Auth/login",
         {
@@ -32,8 +34,10 @@ const LoginPage = () => {
       );
 
       const data = await response.json();
+      console.log("Login response:", { ok: response.ok, data }); // Debug
 
       if (response.ok) {
+        console.log("Login successful, calling authLogin"); // Debug
         authLogin(data.accessToken, data.refreshToken, {
           id: data.userId,
           fullName: data.fullName,
@@ -42,6 +46,7 @@ const LoginPage = () => {
           profilePictureUrl: data.profilePictureUrl,
           roles: data.roles || [],
         });
+        console.log("authLogin called"); // Debug
       } else {
         setError(
           data.message || "Giriş başarısız. Lütfen bilgilerinizi kontrol edin."
