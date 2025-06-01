@@ -81,7 +81,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("userData", JSON.stringify(userData));
     setAccessToken(newAccessToken);
     setUser(userData);
-    router.push("/"); // Giriş sonrası ana sayfaya yönlendir
+
+    // URL'den redirect parametresini kontrol et
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectTo = urlParams.get("redirect");
+
+    // Güvenli redirect path'leri
+    const allowedPaths = ["/home", "/profile", "/plan", "/leaderboard"];
+
+    if (
+      redirectTo &&
+      allowedPaths.some((path) => redirectTo.startsWith(path))
+    ) {
+      router.push(redirectTo);
+    } else {
+      router.push("/home"); // Default olarak home'a yönlendir
+    }
   };
 
   const updateTokensAndUser = (

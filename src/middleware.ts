@@ -12,12 +12,20 @@ export function middleware(request: NextRequest) {
   const landingPath = "/"; // Landing page ana yolda
   const loginPath = "/login";
   const registerPath = "/register";
-  const appProtectedPaths = [homePath, "/profile"]; // Diğer korunmuş uygulama yolları buraya eklenebilir
+  const appProtectedPaths = [homePath, "/profile", "/plan", "/leaderboard"]; // Diğer korunmuş uygulama yolları buraya eklenebilir
 
   // 1. Kullanıcı giriş yapmışsa (accessToken var):
   if (accessToken) {
-    // Eğer login veya register sayfasındaysa, /home'a yönlendir.
+    // Eğer login veya register sayfasındaysa ve redirect parametresi varsa oraya yönlendir
     if (pathname === loginPath || pathname === registerPath) {
+      const redirectTo = request.nextUrl.searchParams.get("redirect");
+      if (
+        redirectTo &&
+        appProtectedPaths.some((path) => redirectTo.startsWith(path))
+      ) {
+        return NextResponse.redirect(new URL(redirectTo, request.url));
+      }
+      // Redirect parametresi yoksa /home'a yönlendir
       return NextResponse.redirect(new URL(homePath, request.url));
     }
     // Eğer ana landing sayfasına ("/") gitmeye çalışıyorsa, /home'a yönlendir.
@@ -27,9 +35,11 @@ export function middleware(request: NextRequest) {
   }
   // 2. Kullanıcı giriş yapmamışsa (accessToken yok):
   else {
-    // Eğer korunmuş bir uygulama yoluna gitmeye çalışıyorsa, /login'e yönlendir.
+    // Eğer korunmuş bir uygulama yoluna gitmeye çalışıyorsa, /login'e yönlendir ve current path'i redirect parametresi olarak ekle.
     if (appProtectedPaths.some((path) => pathname.startsWith(path))) {
-      return NextResponse.redirect(new URL(loginPath, request.url));
+      const loginUrl = new URL(loginPath, request.url);
+      loginUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
@@ -43,6 +53,8 @@ export const config = {
     "/", // Ana sayfa (landing)
     "/home/:path*",
     "/profile/:path*",
+    "/plan/:path*",
+    "/leaderboard/:path*",
     "/login",
     "/register",
     // Not: API yollarını ('/api/:path*') buraya eklemeyin,
