@@ -4,7 +4,6 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { SWRProvider } from "@/components/SWRProvider";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,7 +39,6 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <SWRProvider>{children}</SWRProvider>
-            <Analytics />
           </AuthProvider>
         </ThemeProvider>
       </body>
