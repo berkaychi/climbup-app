@@ -85,13 +85,8 @@ export default function CompletionModal({
     if (modalType === "workToBreak" || modalType === "lastCycleWorkToBreak") {
       return (
         <>
-          <p className="mb-2" data-oid="ystt.j2">
-            Ne yapmak istiyorsunuz?
-          </p>
-          <p
-            className="text-sm text-gray-500 dark:text-gray-400"
-            data-oid="b53xql."
-          >
+          <p className="mb-2">Ne yapmak istiyorsunuz?</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {modalType === "lastCycleWorkToBreak"
               ? "İsteğe bağlı olarak son molaya başlayabilir veya oturumu tamamlayabilirsiniz."
               : "Molaya başlayabilir veya oturumu sonlandırabilirsiniz."}
@@ -102,13 +97,8 @@ export default function CompletionModal({
     if (modalType === "breakToWork") {
       return (
         <>
-          <p className="mb-2" data-oid="6plxv_3">
-            Ne yapmak istiyorsunuz?
-          </p>
-          <p
-            className="text-sm text-gray-500 dark:text-gray-400"
-            data-oid="2b1isi1"
-          >
+          <p className="mb-2">Ne yapmak istiyorsunuz?</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Çalışmaya devam edebilir veya oturumu sonlandırabilirsiniz.
           </p>
         </>
@@ -120,10 +110,7 @@ export default function CompletionModal({
       modalType === "customBreakComplete"
     ) {
       return (
-        <p
-          className="text-sm text-gray-500 dark:text-gray-400"
-          data-oid="cgfq_nw"
-        >
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           {modalType === "lastCycleBreakComplete"
             ? "Yeni bir odak oturumu başlatabilirsiniz."
             : "Yeni bir oturum başlatabilirsiniz."}
@@ -166,22 +153,10 @@ export default function CompletionModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      data-oid="zum6425"
-    >
-      <div
-        className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md shadow-2xl"
-        data-oid="isg6pq-"
-      >
-        <div
-          className="flex justify-between items-center mb-6"
-          data-oid="sad760i"
-        >
-          <h3
-            className="text-xl font-semibold text-gray-800 dark:text-gray-200"
-            data-oid="qk:8h6:"
-          >
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
             {getTitle()}
           </h3>
           <svg
@@ -189,54 +164,39 @@ export default function CompletionModal({
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
-            data-oid="5:kywvp"
           >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              data-oid="2-u805g"
             />
           </svg>
         </div>
 
-        <div className="space-y-4 mb-6" data-oid="cm4xrb5">
-          <div
-            className="bg-green-50 dark:bg-green-900/30 rounded-xl p-4"
-            data-oid="ys8qjac"
-          >
-            <div className="text-center" data-oid="nwyv15o">
-              <div
-                className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2"
-                data-oid="os5zr3h"
-              >
+        <div className="space-y-4 mb-6">
+          <div className="bg-green-50 dark:bg-green-900/30 rounded-xl p-4">
+            <div className="text-center">
+              <div className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
                 {getMessage()}
               </div>
-              <div
-                className="text-sm text-gray-600 dark:text-gray-400"
-                data-oid="-4xut.g"
-              >
+              <div className="text-sm text-gray-600 dark:text-gray-400">
                 {getSessionTypeName()}
               </div>
             </div>
           </div>
 
           {modalType === "customWorkComplete" && (
-            <div className="space-y-3" data-oid="_mv6n44">
-              <p
-                className="text-center text-gray-700 dark:text-gray-300 mb-3"
-                data-oid="xqr-o1d"
-              >
+            <div className="space-y-3">
+              <p className="text-center text-gray-700 dark:text-gray-300 mb-3">
                 Ne yapmak istiyorsunuz?
               </p>
-              <div className="grid grid-cols-3 gap-2" data-oid="yv7wzz.">
+              <div className="grid grid-cols-3 gap-2">
                 {[5, 10, 15].map((duration) => (
                   <button
                     key={duration}
                     onClick={() => onStartUIBreak(duration)}
                     className="px-4 py-3 bg-orange-50 dark:bg-orange-900/30 hover:bg-orange-100 dark:hover:bg-orange-900/50 text-orange-700 dark:text-orange-300 rounded-xl transition-colors text-sm font-medium"
-                    data-oid="w9hs6sv"
                   >
                     {duration} dk mola
                   </button>
@@ -245,19 +205,15 @@ export default function CompletionModal({
             </div>
           )}
 
-          <div
-            className="text-center text-gray-700 dark:text-gray-300"
-            data-oid="k7is1yc"
-          >
+          <div className="text-center text-gray-700 dark:text-gray-300">
             {getDescriptionText()}
           </div>
         </div>
 
-        <div className="flex gap-3" data-oid="zr42od.">
+        <div className="flex gap-3">
           <button
             onClick={onCancel}
             className="flex-1 px-6 py-3 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            data-oid="1wcc8r:"
           >
             {getCancelButtonText()}
           </button>
@@ -266,7 +222,6 @@ export default function CompletionModal({
               onClick={onStartBreak}
               className="flex-1 px-6 py-3 text-white rounded-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105"
               style={{ backgroundColor: "#F96943" }}
-              data-oid="ni4371:"
             >
               {getStartButtonText()}
             </button>

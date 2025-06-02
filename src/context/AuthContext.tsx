@@ -155,7 +155,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         getAccessToken: () => localStorage.getItem("accessToken"),
         getRefreshToken: () => localStorage.getItem("refreshToken"),
       }}
-      data-oid="md00wpp"
     >
       {children}
     </AuthContext.Provider>

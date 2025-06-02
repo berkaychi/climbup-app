@@ -28,14 +28,13 @@ export default function TimerCircle({
   };
 
   return (
-    <div className="text-center mb-8" data-oid="5r6x4.g">
+    <div className="text-center mb-8">
       {/* Timer Circle */}
-      <div className="relative inline-block mb-6" data-oid="drpzl1w">
+      <div className="relative inline-block mb-6">
         {/* Progress Ring */}
         <svg
           className="absolute inset-0 w-80 h-80 transform -rotate-90"
           style={{ left: "-32px", top: "-32px" }}
-          data-oid="2prb4j-"
         >
           {/* Background circle */}
           <circle
@@ -46,7 +45,6 @@ export default function TimerCircle({
             strokeWidth="8"
             fill="none"
             className="opacity-30 dark:stroke-gray-600"
-            data-oid="prujn_s"
           />
 
           {/* Progress circle */}
@@ -64,7 +62,6 @@ export default function TimerCircle({
             style={{
               filter: "drop-shadow(0 2px 4px rgba(249, 105, 67, 0.3))",
             }}
-            data-oid="9sbsy8s"
           />
         </svg>
 
@@ -85,31 +82,22 @@ export default function TimerCircle({
               ? "Timer'ı başlatmak için tıklayın"
               : ""
           }
-          data-oid="cgar:p2"
         >
           {/* Click overlay hint */}
           {!isRunning && !isUIBreakActive && (
-            <div
-              className="absolute inset-0 bg-black/0 group-hover:bg-black/10 dark:group-hover:bg-white/10 transition-all duration-300 flex items-center justify-center"
-              data-oid="97e4w_3"
-            >
-              <div
-                className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full p-3"
-                data-oid="kqevwj:"
-              >
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 dark:group-hover:bg-white/10 transition-all duration-300 flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full p-3">
                 <svg
                   className="w-8 h-8 text-orange-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  data-oid=".65-plr"
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
                     d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.01M15 10h1.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    data-oid="xzw4jws"
                   />
                 </svg>
               </div>
@@ -124,34 +112,22 @@ export default function TimerCircle({
               loop
               muted
               playsInline
-              data-oid="c9u:qu."
             >
-              <source
-                src="/timer/timer-active.mp4"
-                type="video/mp4"
-                data-oid="vq6-lsb"
-              />
+              <source src="/timer/timer-active.mp4" type="video/mp4" />
             </video>
           ) : (
             <img
               src="/timer/timer-default.jpg"
               alt="Timer Default"
               className="w-full h-full object-cover"
-              data-oid="s35sek_"
             />
           )}
         </div>
       </div>
 
       {/* Timer Display */}
-      <div
-        className="relative mb-8 flex items-center justify-center"
-        data-oid="lubprmx"
-      >
-        <div
-          className="text-7xl font-bold text-gray-700 dark:text-gray-200 tracking-wider"
-          data-oid="i50vd6z"
-        >
+      <div className="relative mb-8 flex items-center justify-center">
+        <div className="text-7xl font-bold text-gray-700 dark:text-gray-200 tracking-wider">
           {formatTime(minutes, seconds)}
         </div>
         <button
@@ -162,28 +138,22 @@ export default function TimerCircle({
               ? "opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
               : "bg-orange-50 dark:bg-orange-900/30 text-orange-500 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50 hover:text-orange-600 dark:hover:text-orange-300 hover:scale-110 shadow-sm hover:shadow-md dark:shadow-gray-800/50"
           }`}
-          data-oid="wvyh8:2"
         >
           <svg
             className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
-            data-oid="v.c8tis"
           >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
               d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-              data-oid="cj0lmpr"
             />
           </svg>
           {!disabled && (
-            <span
-              className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-800 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10"
-              data-oid="36w6r0c"
-            >
+            <span className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-800 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
               Özel timer ayarla (Ctrl+E)
             </span>
           )}

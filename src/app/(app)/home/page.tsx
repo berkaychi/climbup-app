@@ -86,7 +86,7 @@ const TimerPage = () => {
     apiTags || null,
     workDurationState, // Dynamic work duration
     timerMode,
-    selectedPlanId ? parseInt(selectedPlanId) : null,
+    selectedPlanId ? parseInt(selectedPlanId) : null
   );
 
   // Forward declarations for handlers
@@ -142,7 +142,7 @@ const TimerPage = () => {
       setShowCompletionModal(true);
     },
     handleLastCycleBreakCompletion,
-    handleCustomWorkCompletion,
+    handleCustomWorkCompletion
   );
 
   // Timer actions with useCallback
@@ -156,7 +156,7 @@ const TimerPage = () => {
         const now = Date.now();
         const remainingSeconds = Math.max(
           0,
-          Math.floor((endTime - now) / 1000),
+          Math.floor((endTime - now) / 1000)
         );
         setUiMinutes(Math.floor(remainingSeconds / 60));
         setUiSeconds(remainingSeconds % 60);
@@ -192,11 +192,11 @@ const TimerPage = () => {
   const openCustomTimerModal = useCallback(() => {
     if (activeFocusSession && activeFocusSession.customDurationSeconds) {
       setCustomWorkDurationInput(
-        Math.floor(activeFocusSession.customDurationSeconds / 60),
+        Math.floor(activeFocusSession.customDurationSeconds / 60)
       );
     } else if (selectedSessionTypeId && sessionTypes) {
       const currentMode = sessionTypes.find(
-        (m) => m.id === selectedSessionTypeId,
+        (m) => m.id === selectedSessionTypeId
       );
       if (currentMode) {
         setCustomWorkDurationInput(Math.floor(currentMode.workDuration / 60));
@@ -371,7 +371,7 @@ const TimerPage = () => {
     if (sessionData.sessionTypeId) {
       setTimerMode("sessionType");
       const matchedSessionType = sessionTypes?.find(
-        (st) => st.id === sessionData.sessionTypeId,
+        (st) => st.id === sessionData.sessionTypeId
       );
       if (matchedSessionType) {
         setWorkDuration(matchedSessionType.workDuration);
@@ -424,7 +424,7 @@ const TimerPage = () => {
 
       if (newSessionData.sessionTypeId && sessionTypes) {
         const currentModeDetails = sessionTypes.find(
-          (st) => st.id === newSessionData.sessionTypeId,
+          (st) => st.id === newSessionData.sessionTypeId
         );
         if (currentModeDetails) {
           if (newSessionData.status === "Working") {
@@ -439,7 +439,7 @@ const TimerPage = () => {
     } else if (newSessionData?.status === "Completed") {
       setIsRunning(false);
       setTimerMode(
-        newSessionData.sessionTypeId ? "sessionCompleted" : "customCompleted",
+        newSessionData.sessionTypeId ? "sessionCompleted" : "customCompleted"
       );
       const defaultDurationForDisplay = 25 * 60;
       setUiMinutes(Math.floor(defaultDurationForDisplay / 60));
@@ -507,7 +507,7 @@ const TimerPage = () => {
     planTitle: string,
     minutes: number,
     planId?: string,
-    planTagName?: string,
+    planTagName?: string
   ) => {
     if (isRunning || activeFocusSession !== null) {
       return;
@@ -544,7 +544,7 @@ const TimerPage = () => {
     setSelectedTags((prev) =>
       prev.includes(tagName)
         ? prev.filter((t) => t !== tagName)
-        : [...prev, tagName],
+        : [...prev, tagName]
     );
   };
 
@@ -574,33 +574,23 @@ const TimerPage = () => {
   };
 
   return (
-    <div
-      className="min-h-screen transition-colors duration-300"
-      data-oid="0z58aw."
-    >
+    <div className="min-h-screen transition-colors duration-300">
       {/* Theme Toggle */}
-      <div className="absolute top-4 right-4 z-40" data-oid="hf-lxeq">
-        <ThemeToggle data-oid="8esckjr" />
+      <div className="absolute top-4 right-4 z-40">
+        <ThemeToggle />
       </div>
 
       {/* Main Content Layout */}
-      <div className="relative w-full" data-oid="jzb.uu3">
+      <div className="relative w-full">
         {/* Left Side - Tasks Panel */}
         <TaskPanel
           isExpanded={isTaskPanelExpanded}
           onToggleExpanded={() => setIsTaskPanelExpanded(!isTaskPanelExpanded)}
-          data-oid="76hnanc"
         />
 
         {/* Center - Timer and Controls */}
-        <div
-          className="flex justify-center md:items-center items-start md:min-h-screen min-h-0 md:pt-0 pt-16"
-          data-oid="tbhbfns"
-        >
-          <div
-            className="max-w-4xl mx-auto px-4 md:py-8 py-4"
-            data-oid="grd:6a1"
-          >
+        <div className="flex justify-center md:items-center items-start md:min-h-screen min-h-0 md:pt-0 pt-16">
+          <div className="max-w-4xl mx-auto px-4 md:py-8 py-4">
             {/* Timer Section */}
             <TimerCircle
               minutes={isUIBreakActive ? uiBreakMinutes : uiMinutes}
@@ -611,7 +601,6 @@ const TimerPage = () => {
               onStartTimer={startTimer}
               onOpenCustomModal={openCustomTimerModal}
               disabled={isRunning || activeFocusSession !== null}
-              data-oid="vjvq73n"
             />
 
             {/* Mode Selection */}
@@ -625,7 +614,6 @@ const TimerPage = () => {
               onSessionTypeSelect={handleSessionTypeSelect}
               onOpenSessionTypeManagement={handleOpenSessionTypeManagement}
               onEditSessionType={handleEditSessionType}
-              data-oid="09htz4t"
             />
 
             {/* Context-Aware Suggestion */}
@@ -635,7 +623,6 @@ const TimerPage = () => {
               onStartPlan={handleStartPlan}
               selectedPlanId={selectedPlanId}
               onCancelPlan={handleCancelPlan}
-              data-oid=".w372n8"
             />
 
             {/* Tags */}
@@ -649,23 +636,21 @@ const TimerPage = () => {
               onToggleTag={toggleTag}
               onOpenTagManagement={handleOpenTagManagement}
               onEditTag={handleEditTag}
-              data-oid="bfj47fy"
             />
 
             {/* Controls */}
-            <div className="mt-4" data-oid="7adeyrd">
+            <div className="mt-4">
               <TimerControls
                 isRunning={isRunning}
                 isUIBreakActive={isUIBreakActive}
                 activeFocusSession={activeFocusSession}
                 onStartTimer={startTimer}
                 onResetTimer={resetTimer}
-                data-oid="xzkbk6p"
               />
             </div>
 
-            <div className="hidden md:block" data-oid="gh9vgvs">
-              <KeyboardShortcutsInfo data-oid="2vij9-q" />
+            <div className="hidden md:block">
+              <KeyboardShortcutsInfo />
             </div>
           </div>
         </div>
@@ -676,7 +661,6 @@ const TimerPage = () => {
           onToggleExpanded={() =>
             setIsMobileTasksExpanded(!isMobileTasksExpanded)
           }
-          data-oid="nq8fx-_"
         />
       </div>
 
@@ -686,7 +670,6 @@ const TimerPage = () => {
         initialDuration={customWorkDurationInput}
         onClose={() => setCustomTimerModalOpen(false)}
         onSave={handleSaveCustomDuration}
-        data-oid="s4t6ia:"
       />
 
       <OngoingSessionModal
@@ -695,7 +678,6 @@ const TimerPage = () => {
         sessionTypes={sessionTypes || null}
         onContinue={handleContinueOngoingSession}
         onCancel={handleCancelOngoingSession}
-        data-oid="ydl28f4"
       />
 
       <CompletionModal
@@ -711,7 +693,6 @@ const TimerPage = () => {
         onStartBreak={handleStartBreak}
         onCancel={handleCancelSession}
         onStartUIBreak={startUIBreak}
-        data-oid="l3db9o0"
       />
 
       <ResetConfirmationModal
@@ -719,14 +700,12 @@ const TimerPage = () => {
         resetType={resetConfirmationType}
         onConfirm={handleConfirmReset}
         onCancel={handleCancelReset}
-        data-oid="knjx3b9"
       />
 
       {/* Right Side - Badge Panel */}
       <BadgePanel
         isExpanded={isBadgePanelExpanded}
         onToggleExpanded={() => setIsBadgePanelExpanded(!isBadgePanelExpanded)}
-        data-oid="7qnfe74"
       />
 
       {/* Management Panel */}
@@ -744,7 +723,6 @@ const TimerPage = () => {
         initialTab={managementInitialTab}
         editingTag={editingTag}
         editingSessionType={editingSessionType}
-        data-oid="i_bzpo-"
       />
 
       {/* Floating Plans Button */}
@@ -752,7 +730,6 @@ const TimerPage = () => {
         isRunning={isRunning}
         activeFocusSession={activeFocusSession}
         onStartPlan={handleStartPlan}
-        data-oid="d3sd2_-"
       />
     </div>
   );

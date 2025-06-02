@@ -12,7 +12,7 @@ interface FloatingPlansButtonProps {
     title: string,
     minutes: number,
     planId?: string,
-    tagName?: string,
+    tagName?: string
   ) => void;
 }
 
@@ -58,20 +58,11 @@ export default function FloatingPlansButton({
             : "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 hover:shadow-xl"
         }`}
         title="Bugünkü Planlar"
-        data-oid="pxjwbw-"
       >
-        <div
-          className="flex items-center justify-center text-white relative"
-          data-oid="ae39y8k"
-        >
-          <span className="text-xl" data-oid="86-:bj4">
-            📅
-          </span>
+        <div className="flex items-center justify-center text-white relative">
+          <span className="text-xl">📅</span>
           {activePlans.length > 0 && (
-            <div
-              className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center font-bold"
-              data-oid="wvlktvj"
-            >
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
               {activePlans.length}
             </div>
           )}
@@ -80,67 +71,46 @@ export default function FloatingPlansButton({
 
       {/* Modal Overlay */}
       {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-end justify-center z-40 md:items-center md:justify-end md:pr-20 md:pb-20"
-          data-oid="jg9l:x1"
-        >
+        <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-40 md:items-center md:justify-end md:pr-20 md:pb-20">
           <div
             className="bg-white dark:bg-gray-800 w-full max-w-sm rounded-t-2xl md:rounded-2xl shadow-2xl transform transition-all duration-300 max-h-96 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
-            data-oid="3inwb8j"
           >
             {/* Header */}
-            <div
-              className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between"
-              data-oid="h7lb.h7"
-            >
-              <div className="flex items-center gap-2" data-oid="rvuueu-">
-                <span className="text-lg" data-oid="79vky-a">
-                  📅
-                </span>
-                <h3
-                  className="font-semibold text-gray-800 dark:text-gray-200"
-                  data-oid="edo6v2p"
-                >
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">📅</span>
+                <h3 className="font-semibold text-gray-800 dark:text-gray-200">
                   Bugünkü Planlar
                 </h3>
-                <span
-                  className="text-xs text-gray-500 dark:text-gray-400"
-                  data-oid="fkrpf5k"
-                >
+                <span className="text-xs text-gray-500 dark:text-gray-400">
                   {activePlans.length} kalan
                 </span>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                data-oid="tq.cfu0"
               >
                 <svg
                   className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  data-oid="_r3o.oo"
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
                     d="M6 18L18 6M6 6l12 12"
-                    data-oid="zosb3_d"
                   />
                 </svg>
               </button>
             </div>
 
             {/* Plans List */}
-            <div className="max-h-64 overflow-y-auto" data-oid="mfj0p2k">
+            <div className="max-h-64 overflow-y-auto">
               {isLoading ? (
-                <div
-                  className="p-4 text-center text-gray-500 dark:text-gray-400"
-                  data-oid=":4alftf"
-                >
+                <div className="p-4 text-center text-gray-500 dark:text-gray-400">
                   Yükleniyor...
                 </div>
               ) : activePlans.length > 0 ? (
@@ -148,28 +118,13 @@ export default function FloatingPlansButton({
                   <div
                     key={plan.id}
                     className="p-3 border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/50"
-                    data-oid="5qt-vzk"
                   >
-                    <div
-                      className="flex items-center justify-between"
-                      data-oid="z8b6gim"
-                    >
-                      <div
-                        className="flex items-center gap-3 flex-1"
-                        data-oid="k6fk-2t"
-                      >
-                        <span className="text-lg" data-oid=".07sk2k">
-                          📋
-                        </span>
-                        <div className="flex-1 min-w-0" data-oid=".o1afkx">
-                          <div
-                            className="flex items-center gap-2 mb-1"
-                            data-oid="lk.etuw"
-                          >
-                            <h4
-                              className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate"
-                              data-oid="3zr.fyf"
-                            >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 flex-1">
+                        <span className="text-lg">📋</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
                               {plan.title}
                             </h4>
                             {plan.tagName && (
@@ -177,16 +132,12 @@ export default function FloatingPlansButton({
                                 className={`px-2 py-0.5 text-xs rounded-full ${
                                   plan.color || "bg-gray-200"
                                 }`}
-                                data-oid="a18mds9"
                               >
                                 {plan.tagName}
                               </span>
                             )}
                           </div>
-                          <div
-                            className="text-xs text-gray-500 dark:text-gray-400"
-                            data-oid="_4n3.le"
-                          >
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
                             {plan.duration || "-"} dakika
                           </div>
                         </div>
@@ -194,7 +145,6 @@ export default function FloatingPlansButton({
                       <button
                         onClick={() => handlePlanStart(plan)}
                         className="ml-2 px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded-full transition-colors"
-                        data-oid="59989uo"
                       >
                         Başlat
                       </button>
@@ -202,24 +152,17 @@ export default function FloatingPlansButton({
                   </div>
                 ))
               ) : (
-                <div
-                  className="p-4 text-center text-gray-500 dark:text-gray-400"
-                  data-oid="gl.xz0l"
-                >
+                <div className="p-4 text-center text-gray-500 dark:text-gray-400">
                   Bugüne ait aktif plan bulunmuyor.
                 </div>
               )}
             </div>
 
             {/* Footer */}
-            <div
-              className="p-3 bg-gray-50 dark:bg-gray-700/50"
-              data-oid="..574y7"
-            >
+            <div className="p-3 bg-gray-50 dark:bg-gray-700/50">
               <button
                 onClick={() => setIsOpen(false)}
                 className="w-full text-center text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
-                data-oid="t0h9n12"
               >
                 📋 Tüm Planları Görüntüle
               </button>
@@ -230,11 +173,7 @@ export default function FloatingPlansButton({
 
       {/* Click outside to close */}
       {isOpen && (
-        <div
-          className="fixed inset-0 z-35"
-          onClick={() => setIsOpen(false)}
-          data-oid="aczmqm."
-        />
+        <div className="fixed inset-0 z-35" onClick={() => setIsOpen(false)} />
       )}
     </>
   );

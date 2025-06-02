@@ -20,7 +20,7 @@ const ConditionalNavbar = () => {
     return null;
   }
 
-  return <Navbar data-oid="4zt668u" />;
+  return <Navbar />;
 };
 
 export default ConditionalNavbar;

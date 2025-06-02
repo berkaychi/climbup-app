@@ -19,7 +19,7 @@ export function SWRProvider({ children }: SWRProviderProps) {
           ) {
             console.warn(
               "Authentication error, user has been logged out:",
-              error,
+              error
             );
             return; // Bu hataları console.error ile loglamayı engelleyelim
           }
@@ -40,7 +40,6 @@ export function SWRProvider({ children }: SWRProviderProps) {
         errorRetryCount: 3,
         errorRetryInterval: 5000,
       }}
-      data-oid="n3fb4.s"
     >
       {children}
     </SWRConfig>

@@ -109,7 +109,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setTheme: handleSetTheme,
         toggleTheme,
       }}
-      data-oid="z9twhi0"
     >
       {children}
     </ThemeContext.Provider>

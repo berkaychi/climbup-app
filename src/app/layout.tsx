@@ -13,12 +13,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="tr" data-oid="yn2xkr3">
-      <head data-oid="-pr8g8n">{}</head>
-      <body className="font-sans antialiased" data-oid="j:nrik8">
-        <ThemeProvider data-oid="49t-my.">
-          <AuthProvider data-oid="jqshi3u">
-            <SWRProvider data-oid="emvc-w5">{children}</SWRProvider>
+    <html lang="tr">
+      <head>{}</head>
+      <body className="font-sans antialiased w-[1434px] h-[1013px]">
+        <ThemeProvider>
+          <AuthProvider>
+            <SWRProvider>{children}</SWRProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
