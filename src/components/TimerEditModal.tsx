@@ -20,7 +20,7 @@ const TimerEditModal: React.FC<TimerEditModalProps> = ({
   initialCustomWorkMinutes,
 }) => {
   const [customWorkDurationInput, setCustomWorkDurationInput] = useState(
-    initialCustomWorkMinutes
+    initialCustomWorkMinutes,
   );
 
   useEffect(() => {
@@ -46,26 +46,38 @@ const TimerEditModal: React.FC<TimerEditModalProps> = ({
           onClose();
         }
       }}
+      data-oid="-wh.k.q"
     >
-      <div className="bg-white rounded-lg p-6 w-80 shadow-xl">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-800">
+      <div
+        className="bg-white rounded-lg p-6 w-80 shadow-xl"
+        data-oid="pfvblj:"
+      >
+        <div
+          className="flex justify-between items-center mb-4"
+          data-oid="qjh.caa"
+        >
+          <h3 className="text-lg font-medium text-gray-800" data-oid="qfzup55">
             Zamanlayıcıyı Düzenle
           </h3>
           <button
             id="closeModal"
             className="text-gray-500 hover:text-gray-700"
             onClick={onClose}
+            data-oid="lcmn34-"
           >
-            <div className="w-6 h-6 flex items-center justify-center">
-              <i className="ri-close-line"></i>
+            <div
+              className="w-6 h-6 flex items-center justify-center"
+              data-oid="k255280"
+            >
+              <i className="ri-close-line" data-oid="7mqg.sc"></i>
             </div>
           </button>
         </div>
-        <div className="mb-4">
+        <div className="mb-4" data-oid="bm6nhso">
           <label
             htmlFor="customWorkDurationInput"
             className="block text-sm font-medium text-gray-700 mb-1"
+            data-oid="ka5404s"
           >
             Çalışma Süresi (dk)
           </label>
@@ -79,14 +91,16 @@ const TimerEditModal: React.FC<TimerEditModalProps> = ({
             }
             min="1"
             max="180" // Max duration can be adjusted as needed
+            data-oid=".5p80ig"
           />
         </div>
         {/* Mola Süresi input alanı kaldırıldı */}
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-end mt-6" data-oid="gaw6jkx">
           <button
             id="saveTimer"
             className="px-4 py-2 bg-primary text-white font-medium rounded-button shadow hover:bg-primary/90 !rounded-button whitespace-nowrap"
             onClick={handleSave}
+            data-oid="-iug:v3"
           >
             Kaydet
           </button>

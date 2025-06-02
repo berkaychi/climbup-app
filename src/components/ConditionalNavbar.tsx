@@ -13,13 +13,14 @@ const ConditionalNavbar = () => {
     "/register",
     "/forgot-password",
   ];
+
   const shouldHideNavbar = hideNavbarPaths.includes(pathname);
 
   if (shouldHideNavbar) {
     return null;
   }
 
-  return <Navbar />;
+  return <Navbar data-oid="4zt668u" />;
 };
 
 export default ConditionalNavbar;

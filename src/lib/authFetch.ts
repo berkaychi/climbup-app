@@ -50,17 +50,15 @@ export async function fetchWithAuth(
 
       if (refreshResponse.ok) {
         const newData = await refreshResponse.json();
+        // Use existing userData from localStorage to avoid overwriting user on refresh
+        const storedUserData = localStorage.getItem("userData");
+        const parsedUser = storedUserData
+          ? (JSON.parse(storedUserData) as User)
+          : null;
         authActions.updateTokensAndUser(
           newData.accessToken,
           newData.refreshToken,
-          {
-            id: newData.userId,
-            fullName: newData.fullName,
-            userName: newData.userName,
-            email: newData.email,
-            profilePictureUrl: newData.profilePictureUrl,
-            roles: newData.roles || [],
-          }
+          parsedUser!
         );
         (options.headers as Record<string, string>)[
           "Authorization"

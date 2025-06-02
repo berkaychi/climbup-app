@@ -30,17 +30,26 @@ export default function BadgePanel({
     <>
       {/* Collapsed State - Horizontal Bar */}
       {!isExpanded && (
-        <div className="hidden xl:block fixed right-4 top-24 z-30">
+        <div
+          className="hidden xl:block fixed right-4 top-24 z-30"
+          data-oid="awbk-sn"
+        >
           <button
             onClick={onToggleExpanded}
             className="flex items-center gap-3 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-lg border border-white/20 dark:border-gray-700/30 px-4 py-3 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 group"
             title="Rozet panelini genişlet"
+            data-oid="_oy-bf."
           >
             {/* Badge Icon */}
-            <div className="text-xl">🥇</div>
+            <div className="text-xl" data-oid="dkn3_jn">
+              🥇
+            </div>
 
             {/* BADGES Text */}
-            <span className="text-sm font-bold text-gray-800 dark:text-gray-100 tracking-wider">
+            <span
+              className="text-sm font-bold text-gray-800 dark:text-gray-100 tracking-wider"
+              data-oid="a041ru8"
+            >
               BADGES
             </span>
 
@@ -50,12 +59,14 @@ export default function BadgePanel({
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              data-oid="xex4v67"
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
                 d="M19 9l-7 7-7-7"
+                data-oid="dlgs12:"
               />
             </svg>
           </button>
@@ -64,54 +75,78 @@ export default function BadgePanel({
 
       {/* Expanded State - Side Panel */}
       {isExpanded && (
-        <div className="hidden xl:block fixed right-4 top-1/2 transform -translate-y-1/2 h-[80vh] w-80 z-30">
+        <div
+          className="hidden xl:block fixed right-4 top-1/2 transform -translate-y-1/2 h-[80vh] w-80 z-30"
+          data-oid="e0fb.n4"
+        >
           {/* Toggle Button */}
           <button
             onClick={onToggleExpanded}
             className="absolute left-4 top-4 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-lg shadow-lg border border-white/20 dark:border-gray-700/30 p-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
             title="Rozet panelini kapat"
+            data-oid="bflncwy"
           >
             <svg
               className="w-4 h-4 text-gray-600 dark:text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              data-oid="ptr0upb"
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
                 d="M6 18L18 6M6 6l12 12"
+                data-oid="3jtz8-b"
               />
             </svg>
           </button>
 
           {/* Panel Content */}
-          <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 dark:border-gray-700/30 h-full p-4">
-            <div className="flex items-center justify-between mb-4 mt-12">
-              <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">
+          <div
+            className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 dark:border-gray-700/30 h-full p-4"
+            data-oid="25riooh"
+          >
+            <div
+              className="flex items-center justify-between mb-4 mt-12"
+              data-oid="_flyjih"
+            >
+              <h2
+                className="text-lg font-bold text-gray-800 dark:text-gray-100"
+                data-oid="7:i::zk"
+              >
                 🏆 Rozetlerim
               </h2>
               {userBadges && (
-                <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
+                <span
+                  className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full"
+                  data-oid="hmeuak_"
+                >
                   {userBadges.length} rozet
                 </span>
               )}
             </div>
 
             {isLoading ? (
-              <div className="space-y-3">
+              <div className="space-y-3" data-oid="m32j.qc">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="animate-pulse">
-                    <div className="bg-gray-200 dark:bg-gray-700 rounded-lg h-16"></div>
+                  <div key={i} className="animate-pulse" data-oid="ojxw2nx">
+                    <div
+                      className="bg-gray-200 dark:bg-gray-700 rounded-lg h-16"
+                      data-oid="r3c42q:"
+                    ></div>
                   </div>
                 ))}
               </div>
             ) : userBadges && userBadges.length > 0 ? (
-              <div className="space-y-3 h-[calc(100%-80px)] overflow-y-auto">
+              <div
+                className="space-y-3 h-[calc(100%-80px)] overflow-y-auto"
+                data-oid="u4sfi3:"
+              >
                 {badgeService.sortBadgesByDate(userBadges).map((badge) => {
                   const rarity = badgeService.getBadgeRarity(
-                    badge.achievedLevel
+                    badge.achievedLevel,
                   );
                   const isRecent =
                     badgeService.getRecentlyEarnedBadges([badge]).length > 0;
@@ -124,9 +159,13 @@ export default function BadgePanel({
                           ? "border-yellow-300 dark:border-yellow-600 bg-yellow-50/50 dark:bg-yellow-900/20 ring-2 ring-yellow-200 dark:ring-yellow-600"
                           : "border-gray-200 dark:border-gray-600"
                       }`}
+                      data-oid="_ww_6wt"
                     >
-                      <div className="flex items-center">
-                        <div className="relative mr-3 flex-shrink-0">
+                      <div className="flex items-center" data-oid=".7u-5ks">
+                        <div
+                          className="relative mr-3 flex-shrink-0"
+                          data-oid="d9ea4d."
+                        >
                           <img
                             src={badge.achievedLevel.iconURL}
                             alt={badge.achievedLevel.name}
@@ -134,16 +173,32 @@ export default function BadgePanel({
                             style={{
                               filter: `drop-shadow(0 2px 4px ${rarity.color}40)`,
                             }}
+                            data-oid="sjlax5c"
                           />
+
                           {isRecent && (
-                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
-                              <span className="text-white text-xs">✨</span>
+                            <div
+                              className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center"
+                              data-oid="sqjc0_u"
+                            >
+                              <span
+                                className="text-white text-xs"
+                                data-oid="-z8xzs_"
+                              >
+                                ✨
+                              </span>
                             </div>
                           )}
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between mb-1">
-                            <h4 className="font-medium text-gray-800 dark:text-gray-100 text-sm truncate">
+                        <div className="min-w-0 flex-1" data-oid="-mt6uiz">
+                          <div
+                            className="flex items-center justify-between mb-1"
+                            data-oid="an6zka3"
+                          >
+                            <h4
+                              className="font-medium text-gray-800 dark:text-gray-100 text-sm truncate"
+                              data-oid="fignwmo"
+                            >
                               {badge.badgeCoreName}
                             </h4>
                             <span
@@ -152,24 +207,37 @@ export default function BadgePanel({
                                 backgroundColor: `${rarity.color}20`,
                                 color: rarity.color,
                               }}
+                              data-oid="6xtdt7p"
                             >
                               {rarity.rarity}
                             </span>
                           </div>
-                          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                          <p
+                            className="text-xs text-gray-600 dark:text-gray-400 mb-1"
+                            data-oid="n.ocxnl"
+                          >
                             {badge.achievedLevel.name}
                           </p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                          <div
+                            className="flex items-center justify-between"
+                            data-oid="-x34pxh"
+                          >
+                            <span
+                              className="text-xs text-gray-500 dark:text-gray-400"
+                              data-oid="bv0ym_9"
+                            >
                               Seviye {badge.achievedLevel.level}
                             </span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                            <span
+                              className="text-xs text-gray-500 dark:text-gray-400"
+                              data-oid="wobxa1e"
+                            >
                               {new Date(badge.dateAchieved).toLocaleDateString(
                                 "tr-TR",
                                 {
                                   month: "short",
                                   day: "numeric",
-                                }
+                                },
                               )}
                             </span>
                           </div>
@@ -181,8 +249,14 @@ export default function BadgePanel({
 
                 {/* Real-time Progress indicators for next badges */}
                 {badgeProgress && userBadges && (
-                  <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
-                    <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3">
+                  <div
+                    className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600"
+                    data-oid="rm1i9sz"
+                  >
+                    <h3
+                      className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3"
+                      data-oid="dyv0ehh"
+                    >
                       🎯 Sonraki Hedefler
                     </h3>
                     {badgeService
@@ -197,41 +271,72 @@ export default function BadgePanel({
                           <div
                             key={definition.badgeDefinitionID}
                             className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 mb-3"
+                            data-oid="ai6vspd"
                           >
-                            <div className="flex items-center mb-2">
+                            <div
+                              className="flex items-center mb-2"
+                              data-oid="79_i8eo"
+                            >
                               <img
                                 src={progressInfo.nextLevel.iconURL}
                                 alt={progressInfo.nextLevel.name}
                                 className="w-8 h-8 object-contain mr-2 opacity-75"
+                                data-oid="xenormc"
                               />
-                              <div className="min-w-0 flex-1">
-                                <h4 className="font-medium text-gray-700 dark:text-gray-300 text-xs">
+
+                              <div
+                                className="min-w-0 flex-1"
+                                data-oid="3_incdf"
+                              >
+                                <h4
+                                  className="font-medium text-gray-700 dark:text-gray-300 text-xs"
+                                  data-oid="4.m3rlx"
+                                >
                                   {definition.coreName}
                                 </h4>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                <p
+                                  className="text-xs text-gray-500 dark:text-gray-400"
+                                  data-oid="d6g7xt-"
+                                >
                                   {progressInfo.nextLevel.name}
                                 </p>
                               </div>
                             </div>
-                            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mb-1">
+                            <div
+                              className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mb-1"
+                              data-oid="6yx.c2y"
+                            >
                               <div
                                 className="h-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 transition-all duration-500"
                                 style={{ width: `${progressInfo.progress}%` }}
+                                data-oid="w:m.5__"
                               ></div>
                             </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                            <div
+                              className="flex justify-between items-center"
+                              data-oid="a1wspjy"
+                            >
+                              <span
+                                className="text-xs text-gray-500 dark:text-gray-400"
+                                data-oid="u1e32qu"
+                              >
                                 {progressInfo.currentValue} /{" "}
                                 {progressInfo.targetValue}
                               </span>
-                              <span className="text-xs font-medium text-orange-600 dark:text-orange-400">
+                              <span
+                                className="text-xs font-medium text-orange-600 dark:text-orange-400"
+                                data-oid="6jg_6wi"
+                              >
                                 %{Math.round(progressInfo.progress)}
                               </span>
                             </div>
-                            <div className="mt-1">
-                              <span className="text-xs text-orange-500 dark:text-orange-400">
+                            <div className="mt-1" data-oid=":so-2.r">
+                              <span
+                                className="text-xs text-orange-500 dark:text-orange-400"
+                                data-oid="z2stvmb"
+                              >
                                 {badgeService.getEncouragementMessage(
-                                  progressInfo.progress
+                                  progressInfo.progress,
                                 )}
                               </span>
                             </div>
@@ -242,8 +347,14 @@ export default function BadgePanel({
                     {/* Show badges close to completion */}
                     {badgeService.getCloseToCompletionBadges(badgeProgress)
                       .length > 0 && (
-                      <div className="mt-4 pt-3 border-t border-orange-200 dark:border-orange-800">
-                        <h4 className="text-xs font-semibold text-orange-600 dark:text-orange-400 mb-2">
+                      <div
+                        className="mt-4 pt-3 border-t border-orange-200 dark:border-orange-800"
+                        data-oid="i7ywgzz"
+                      >
+                        <h4
+                          className="text-xs font-semibold text-orange-600 dark:text-orange-400 mb-2"
+                          data-oid="0mbooot"
+                        >
                           🔥 Tamamlanmaya Yakın
                         </h4>
                         {badgeService
@@ -258,6 +369,7 @@ export default function BadgePanel({
                               <div
                                 key={definition.badgeDefinitionID}
                                 className="text-xs text-orange-600 dark:text-orange-400 mb-1"
+                                data-oid="yru2-ln"
                               >
                                 ⚡ {definition.coreName} - %
                                 {Math.round(progressInfo.progress)}
@@ -270,24 +382,46 @@ export default function BadgePanel({
                 )}
               </div>
             ) : hasError ? (
-              <div className="text-center py-8">
-                <div className="text-3xl mb-3">⚠️</div>
-                <p className="text-red-500 dark:text-red-400 text-sm mb-1">
+              <div className="text-center py-8" data-oid="8i4-u4f">
+                <div className="text-3xl mb-3" data-oid="f6ucq1s">
+                  ⚠️
+                </div>
+                <p
+                  className="text-red-500 dark:text-red-400 text-sm mb-1"
+                  data-oid="9:g-4ao"
+                >
                   Rozetler yüklenirken hata oluştu
                 </p>
-                <p className="text-gray-400 dark:text-gray-500 text-xs">
+                <p
+                  className="text-gray-400 dark:text-gray-500 text-xs"
+                  data-oid="cvd6r5l"
+                >
                   {(userBadgesError || badgeProgressError)?.message}
                 </p>
               </div>
             ) : (
               // Show Level 1 badges for new users
-              <div className="space-y-3 h-[calc(100%-80px)] overflow-y-auto">
-                <div className="text-center py-4 border-b border-gray-200 dark:border-gray-600">
-                  <div className="text-2xl mb-2">🌟</div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-1">
+              <div
+                className="space-y-3 h-[calc(100%-80px)] overflow-y-auto"
+                data-oid="hgm53bv"
+              >
+                <div
+                  className="text-center py-4 border-b border-gray-200 dark:border-gray-600"
+                  data-oid="5pulrxw"
+                >
+                  <div className="text-2xl mb-2" data-oid="4p9l1v0">
+                    🌟
+                  </div>
+                  <p
+                    className="text-gray-600 dark:text-gray-400 text-sm mb-1"
+                    data-oid="dw5j68w"
+                  >
                     Başlangıç Rozetleri
                   </p>
-                  <p className="text-gray-500 dark:text-gray-500 text-xs">
+                  <p
+                    className="text-gray-500 dark:text-gray-500 text-xs"
+                    data-oid="np8bk2x"
+                  >
                     İlk hedeflerinizi keşfedin!
                   </p>
                 </div>
@@ -305,9 +439,13 @@ export default function BadgePanel({
                         <div
                           key={definition.badgeDefinitionID}
                           className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 p-3 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+                          data-oid="0jn0:wg"
                         >
-                          <div className="flex items-center">
-                            <div className="relative mr-3 flex-shrink-0">
+                          <div className="flex items-center" data-oid="xz_mj00">
+                            <div
+                              className="relative mr-3 flex-shrink-0"
+                              data-oid="r79tdij"
+                            >
                               <img
                                 src={level1Badge.iconURL}
                                 alt={level1Badge.name}
@@ -318,37 +456,68 @@ export default function BadgePanel({
                                       .color
                                   }40)`,
                                 }}
+                                data-oid="kq1mlsg"
                               />
-                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center">
-                                <span className="text-white text-xs">🎯</span>
+
+                              <div
+                                className="absolute -top-1 -right-1 w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center"
+                                data-oid="qini-j8"
+                              >
+                                <span
+                                  className="text-white text-xs"
+                                  data-oid="cwdx3t:"
+                                >
+                                  🎯
+                                </span>
                               </div>
                             </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center justify-between mb-1">
-                                <h4 className="font-medium text-gray-800 dark:text-gray-100 text-sm truncate">
+                            <div className="min-w-0 flex-1" data-oid="mn4hl8z">
+                              <div
+                                className="flex items-center justify-between mb-1"
+                                data-oid="ra1e4d7"
+                              >
+                                <h4
+                                  className="font-medium text-gray-800 dark:text-gray-100 text-sm truncate"
+                                  data-oid="3wuii_c"
+                                >
                                   {definition.coreName}
                                 </h4>
-                                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                                <span
+                                  className="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400"
+                                  data-oid="_8o0g6b"
+                                >
                                   Hedef
                                 </span>
                               </div>
-                              <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                              <p
+                                className="text-xs text-gray-600 dark:text-gray-400 mb-1"
+                                data-oid="8mdd6bh"
+                              >
                                 {level1Badge.name}
                               </p>
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                              <div
+                                className="flex items-center justify-between"
+                                data-oid="h33bzal"
+                              >
+                                <span
+                                  className="text-xs text-gray-500 dark:text-gray-400"
+                                  data-oid="epj45mr"
+                                >
                                   {level1Badge.requiredValue}{" "}
                                   {definition.metricToTrack.includes("hours")
                                     ? "saat"
                                     : definition.metricToTrack.includes(
-                                        "sessions"
-                                      )
-                                    ? "seans"
-                                    : "gün"}{" "}
+                                          "sessions",
+                                        )
+                                      ? "seans"
+                                      : "gün"}{" "}
                                   gerekli
                                 </span>
                                 {progressInfo && (
-                                  <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">
+                                  <span
+                                    className="text-xs text-orange-600 dark:text-orange-400 font-medium"
+                                    data-oid="31bhhbz"
+                                  >
                                     {progressInfo.currentValue || 0} /{" "}
                                     {level1Badge.requiredValue}
                                   </span>
@@ -356,8 +525,11 @@ export default function BadgePanel({
                               </div>
                               {progressInfo &&
                                 progressInfo.currentValue > 0 && (
-                                  <div className="mt-2">
-                                    <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
+                                  <div className="mt-2" data-oid="eiwgywv">
+                                    <div
+                                      className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5"
+                                      data-oid="yrn81rk"
+                                    >
                                       <div
                                         className="h-1.5 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 transition-all duration-500"
                                         style={{
@@ -365,9 +537,10 @@ export default function BadgePanel({
                                             (progressInfo.currentValue /
                                               level1Badge.requiredValue) *
                                               100,
-                                            100
+                                            100,
                                           )}%`,
                                         }}
+                                        data-oid="_sllh3t"
                                       ></div>
                                     </div>
                                   </div>
@@ -378,12 +551,20 @@ export default function BadgePanel({
                       );
                     })
                 ) : (
-                  <div className="text-center py-8">
-                    <div className="text-3xl mb-3">🏆</div>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm mb-1">
+                  <div className="text-center py-8" data-oid="c7df73l">
+                    <div className="text-3xl mb-3" data-oid="r_czjhg">
+                      🏆
+                    </div>
+                    <p
+                      className="text-gray-500 dark:text-gray-400 text-sm mb-1"
+                      data-oid="owm0qdl"
+                    >
                       Henüz rozet kazanmadınız
                     </p>
-                    <p className="text-gray-400 dark:text-gray-500 text-xs">
+                    <p
+                      className="text-gray-400 dark:text-gray-500 text-xs"
+                      data-oid="mr8mqbe"
+                    >
                       Odaklanma seansları tamamlayarak ilk rozetinizi kazanın!
                     </p>
                   </div>

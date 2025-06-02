@@ -28,7 +28,7 @@ export interface AuthContextType {
   updateTokensAndUser: (
     newAccessToken: string,
     newRefreshToken: string,
-    userData: User
+    userData: User,
   ) => void;
   getAccessToken: () => string | null;
   getRefreshToken: () => string | null;
@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (
     newAccessToken: string,
     newRefreshToken: string,
-    userData: User
+    userData: User,
   ) => {
     localStorage.setItem("accessToken", newAccessToken);
     Cookies.set("accessToken", newAccessToken, { expires: 7, path: "/" });
@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const updateTokensAndUser = (
     newAccessToken: string,
     newRefreshToken: string,
-    userData: User
+    userData: User,
   ) => {
     localStorage.setItem("accessToken", newAccessToken);
     Cookies.set("accessToken", newAccessToken, { expires: 7, path: "/" });
@@ -115,7 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               Authorization: `Bearer ${currentAccessToken}`,
             },
             body: JSON.stringify({ refreshToken: storedRefreshToken }),
-          }
+          },
         );
         if (response.ok) {
           console.log("Successfully logged out from API.");
@@ -125,7 +125,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             "API logout failed:",
             response.status,
             response.statusText,
-            errorBody
+            errorBody,
           );
         }
       } catch (error) {
@@ -155,6 +155,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         getAccessToken: () => localStorage.getItem("accessToken"),
         getRefreshToken: () => localStorage.getItem("refreshToken"),
       }}
+      data-oid="md00wpp"
     >
       {children}
     </AuthContext.Provider>

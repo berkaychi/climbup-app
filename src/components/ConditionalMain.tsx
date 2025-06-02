@@ -15,7 +15,11 @@ const ConditionalMain = ({ children }: ConditionalMainProps) => {
   const shouldUseContainer = !noContainerPaths.includes(pathname);
 
   if (shouldUseContainer) {
-    return <main className="container mx-auto px-4 py-8">{children}</main>;
+    return (
+      <main className="container mx-auto px-4 py-8" data-oid="bl4319p">
+        {children}
+      </main>
+    );
   }
 
   // Auth sayfaları için container olmadan direkt render et

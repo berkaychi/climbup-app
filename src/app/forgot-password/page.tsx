@@ -25,7 +25,7 @@ const ForgotPasswordPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ email }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -33,18 +33,18 @@ const ForgotPasswordPage = () => {
       if (response.ok) {
         setSuccessMessage(
           data.message ||
-            "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi. Lütfen e-postanızı kontrol edin."
+            "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi. Lütfen e-postanızı kontrol edin.",
         );
         setEmail("");
       } else {
         setError(
-          data.message || "Bir hata oluştu. Lütfen daha sonra tekrar deneyin."
+          data.message || "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
         );
       }
     } catch (err) {
       console.error("Forgot password error:", err);
       setError(
-        "Şifre sıfırlama isteği gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
+        "Şifre sıfırlama isteği gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
       );
     } finally {
       setLoading(false);
@@ -52,38 +52,61 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div
+      className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4 sm:px-6 lg:px-8"
+      data-oid="33zc9tk"
+    >
       {/* Theme Toggle - Top Right */}
-      <div className="absolute top-6 right-6 z-20">
-        <ThemeToggle />
+      <div className="absolute top-6 right-6 z-20" data-oid="z-kt3g7">
+        <ThemeToggle data-oid="pppk6hz" />
       </div>
 
       {/* Main Card */}
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 lg:p-10 relative border border-gray-100 dark:border-gray-700">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-white/60 dark:from-gray-800/80 dark:to-gray-800/60 rounded-2xl backdrop-blur-sm"></div>
+      <div
+        className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 lg:p-10 relative border border-gray-100 dark:border-gray-700"
+        data-oid="a8otqq-"
+      >
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-white/80 to-white/60 dark:from-gray-800/80 dark:to-gray-800/60 rounded-2xl backdrop-blur-sm"
+          data-oid="nmc521i"
+        ></div>
 
         {/* ClimbUp Logo */}
-        <div className="text-center mb-8 relative z-10">
-          <h1 className="text-4xl font-pacifico font-bold text-orange-600 dark:text-orange-400 mb-2">
+        <div className="text-center mb-8 relative z-10" data-oid="xc74fbn">
+          <h1
+            className="text-4xl font-pacifico font-bold text-orange-600 dark:text-orange-400 mb-2"
+            data-oid="ub9l3z3"
+          >
             ClimbUp
           </h1>
-          <p className="text-gray-600 dark:text-gray-300 text-lg">
+          <p
+            className="text-gray-600 dark:text-gray-300 text-lg"
+            data-oid="dgdel-2"
+          >
             Şifreni sıfırla, hedefine odaklan
           </p>
         </div>
 
         {/* Reset Form */}
-        <div className="relative z-10">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
+        <div className="relative z-10" data-oid="_-lp2mw">
+          <h2
+            className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center"
+            data-oid="sqobuu8"
+          >
             Şifremi Unuttum
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6"
+            data-oid="4vaq7:p"
+          >
             {/* Email Field */}
-            <div>
+            <div data-oid=":s7v-1c">
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                data-oid="b0noyz-"
               >
                 E-posta Adresi
               </label>
@@ -96,22 +119,36 @@ const ForgotPasswordPage = () => {
                 placeholder="ornek@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                data-oid=":byrd2-"
               />
             </div>
 
             {/* Error Message */}
             {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-xl p-4">
-                <div className="flex">
+              <div
+                className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-xl p-4"
+                data-oid="7l-3osa"
+              >
+                <div className="flex" data-oid="yon5s6m">
                   <svg
                     className="h-5 w-5 text-red-400 dark:text-red-300"
                     viewBox="0 0 24 24"
+                    data-oid="4s7-8g-"
                   >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 12 2zm0 18c-4.41 0-8.01-3.6-8.01-8.01C3.99 7.6 7.59 3.99 12 3.99c4.41 0 8.01 3.6 8.01 8.01C20.01 18.4 16.41 22 12 22z" />
-                    <path d="M12 13c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1z" />
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 12 2zm0 18c-4.41 0-8.01-3.6-8.01-8.01C3.99 7.6 7.59 3.99 12 3.99c4.41 0 8.01 3.6 8.01 8.01C20.01 18.4 16.41 22 12 22z"
+                      data-oid="4xjm-8e"
+                    />
+                    <path
+                      d="M12 13c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1z"
+                      data-oid="n60.dn8"
+                    />
                   </svg>
-                  <div className="ml-3">
-                    <p className="text-sm text-red-800 dark:text-red-300">
+                  <div className="ml-3" data-oid=".tap5ys">
+                    <p
+                      className="text-sm text-red-800 dark:text-red-300"
+                      data-oid="witj6c5"
+                    >
                       {error}
                     </p>
                   </div>
@@ -121,8 +158,14 @@ const ForgotPasswordPage = () => {
 
             {/* Success Message */}
             {successMessage && (
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-xl p-4">
-                <p className="text-sm text-green-800 dark:text-green-300">
+              <div
+                className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-xl p-4"
+                data-oid="awtdgjo"
+              >
+                <p
+                  className="text-sm text-green-800 dark:text-green-300"
+                  data-oid="zpcemnp"
+                >
                   {successMessage}
                 </p>
               </div>
@@ -133,9 +176,13 @@ const ForgotPasswordPage = () => {
               type="submit"
               disabled={loading}
               className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-white bg-orange-600 dark:bg-orange-500 hover:bg-orange-700 dark:hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 dark:focus:ring-orange-400 font-medium text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-lg"
+              data-oid="n09nnr7"
             >
               {loading ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white dark:border-gray-200"></div>
+                <div
+                  className="animate-spin rounded-full h-6 w-6 border-b-2 border-white dark:border-gray-200"
+                  data-oid="_d3-e69"
+                ></div>
               ) : (
                 "Şifre Sıfırlama Linki Gönder"
               )}
@@ -143,12 +190,13 @@ const ForgotPasswordPage = () => {
           </form>
 
           {/* Back to Login */}
-          <div className="mt-8 text-center">
-            <p className="text-gray-600 dark:text-gray-400">
+          <div className="mt-8 text-center" data-oid="4dvay89">
+            <p className="text-gray-600 dark:text-gray-400" data-oid="9gtl72n">
               Şifreni hatırladın mı?{" "}
               <Link
                 href="/login"
                 className="font-medium text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 transition-colors duration-200"
+                data-oid="n1gm97g"
               >
                 Giriş yap
               </Link>

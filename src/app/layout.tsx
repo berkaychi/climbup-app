@@ -27,18 +27,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="tr">
-      <head>{}</head>
+    <html lang="tr" data-oid="yn2xkr3">
+      <head data-oid="-pr8g8n">{}</head>
       <body
         className={`${inter.variable} ${pacifico.variable} font-sans antialiased`}
+        data-oid="j:nrik8"
       >
-        <ThemeProvider>
-          <AuthProvider>
-            <SWRProvider>{children}</SWRProvider>
+        <ThemeProvider data-oid="49t-my.">
+          <AuthProvider data-oid="jqshi3u">
+            <SWRProvider data-oid="emvc-w5">{children}</SWRProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
