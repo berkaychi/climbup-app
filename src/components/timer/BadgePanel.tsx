@@ -87,7 +87,7 @@ export default function BadgePanel({
           </button>
 
           {/* Panel Content */}
-          <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 dark:border-gray-700/30 p-4 h-[743px] w-[254px]">
+          <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 dark:border-gray-700/30 h-full p-4">
             <div className="flex items-center justify-between mb-4 mt-12">
               <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">
                 🏆 Rozetlerim
@@ -108,10 +108,10 @@ export default function BadgePanel({
                 ))}
               </div>
             ) : userBadges && userBadges.length > 0 ? (
-              <div className="space-y-3 overflow-y-auto w-[285px] h-[709px]">
+              <div className="space-y-3 h-[calc(100%-80px)] overflow-y-auto">
                 {badgeService.sortBadgesByDate(userBadges).map((badge) => {
                   const rarity = badgeService.getBadgeRarity(
-                    badge.achievedLevel,
+                    badge.achievedLevel
                   );
                   const isRecent =
                     badgeService.getRecentlyEarnedBadges([badge]).length > 0;
@@ -170,7 +170,7 @@ export default function BadgePanel({
                                 {
                                   month: "short",
                                   day: "numeric",
-                                },
+                                }
                               )}
                             </span>
                           </div>
@@ -233,7 +233,7 @@ export default function BadgePanel({
                             <div className="mt-1">
                               <span className="text-xs text-orange-500 dark:text-orange-400">
                                 {badgeService.getEncouragementMessage(
-                                  progressInfo.progress,
+                                  progressInfo.progress
                                 )}
                               </span>
                             </div>
@@ -344,10 +344,10 @@ export default function BadgePanel({
                                   {definition.metricToTrack.includes("hours")
                                     ? "saat"
                                     : definition.metricToTrack.includes(
-                                          "sessions",
-                                        )
-                                      ? "seans"
-                                      : "gün"}{" "}
+                                        "sessions"
+                                      )
+                                    ? "seans"
+                                    : "gün"}{" "}
                                   gerekli
                                 </span>
                                 {progressInfo && (
@@ -368,7 +368,7 @@ export default function BadgePanel({
                                             (progressInfo.currentValue /
                                               level1Badge.requiredValue) *
                                               100,
-                                            100,
+                                            100
                                           )}%`,
                                         }}
                                       ></div>

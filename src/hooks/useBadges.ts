@@ -95,10 +95,9 @@ export function useUserBadges() {
 // NEW: Hook to get current user's badge progress (real-time tracking)
 export function useUserBadgeProgress() {
   const authContext = useAuth();
-  const userId = authContext.user?.id;
   const swrKey =
-    userId && API_BASE_URL
-      ? `${API_BASE_URL}/api/users/${userId}/badges/progress`
+    authContext.user && API_BASE_URL
+      ? `${API_BASE_URL}/api/badges/me/progress`
       : null;
 
   const { data, error, isLoading, mutate } = useSWR<

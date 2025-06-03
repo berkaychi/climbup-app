@@ -20,7 +20,7 @@ const TimerEditModal: React.FC<TimerEditModalProps> = ({
   initialCustomWorkMinutes,
 }) => {
   const [customWorkDurationInput, setCustomWorkDurationInput] = useState(
-    initialCustomWorkMinutes,
+    initialCustomWorkMinutes
   );
 
   useEffect(() => {
