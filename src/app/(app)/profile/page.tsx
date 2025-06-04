@@ -12,11 +12,13 @@ import {
 import { usePlans } from "@/hooks/usePlans";
 import { format, subDays } from "date-fns";
 import { tr } from "date-fns/locale";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 const ProfilePage = () => {
   const { user, isLoading } = useAuth();
   const { resolvedTheme } = useTheme();
   const router = useRouter();
+  const { userProfile, isLoadingUserProfile } = useUserProfile();
 
   // Date calculations for statistics
   const today = new Date();
@@ -127,10 +129,24 @@ const ProfilePage = () => {
                 <p className="text-gray-600 dark:text-gray-400 mt-1">
                   {user.email}
                 </p>
-                <div className="flex items-center justify-center md:justify-start mt-2 space-x-2">
+                <div className="flex items-center justify-center md:justify-start mt-2 space-x-4">
                   <span className="px-3 py-1 bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 text-green-800 dark:text-green-300 text-xs font-medium rounded-full">
                     Aktif Üye
                   </span>
+                  {isLoadingUserProfile ? (
+                    <div className="w-6 h-6 bg-gray-300 dark:bg-gray-700 animate-pulse rounded" />
+                  ) : (
+                    <>
+                      <div className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                        <span>👣</span>
+                        <span>{userProfile?.totalSteps}</span>
+                      </div>
+                      <div className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 text-sm font-medium">
+                        <span>🪙</span>
+                        <span>{userProfile?.stepstones}</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
               <button className="mt-4 md:mt-0 px-4 py-2 bg-orange-600 dark:bg-orange-500 text-white text-sm font-medium rounded-lg shadow-sm hover:bg-orange-700 dark:hover:bg-orange-600 transition-all duration-300 hover:shadow-lg transform hover:scale-105">
