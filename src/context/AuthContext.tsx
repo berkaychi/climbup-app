@@ -24,7 +24,7 @@ export interface AuthContextType {
   accessToken: string | null;
   isLoading: boolean;
   login: (accessToken: string, refreshToken: string, userData: User) => void;
-  logout: () => void;
+  logout: (shouldRedirect?: boolean) => void;
   updateTokensAndUser: (
     newAccessToken: string,
     newRefreshToken: string,
@@ -110,7 +110,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const logout = async () => {
+  const logout = async (shouldRedirect: boolean = true) => {
     const storedRefreshToken = localStorage.getItem("refreshToken");
     const currentAccessToken = accessToken; // Context state'inden accessToken alınıyor
 
@@ -150,7 +150,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("userData");
     setAccessToken(null);
     setUser(null);
-    router.push("/login"); // Çıkış sonrası giriş sayfasına yönlendir
+    if (shouldRedirect) {
+      router.push("/login"); // Çıkış sonrası giriş sayfasına yönlendir
+    }
   };
 
   return (
