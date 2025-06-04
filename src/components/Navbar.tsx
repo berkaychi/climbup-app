@@ -69,19 +69,6 @@ const Navbar = () => {
                 Plan
               </Link>
               <Link
-                href="/profile"
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
-                  pathname === "/profile"
-                    ? "text-white shadow-lg"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400"
-                }`}
-                style={
-                  pathname === "/profile" ? { backgroundColor: "#F96943" } : {}
-                }
-              >
-                Profil
-              </Link>
-              <Link
                 href="/leaderboard"
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
                   pathname === "/leaderboard"
@@ -97,17 +84,17 @@ const Navbar = () => {
                 🏆 Liderlik
               </Link>
               <Link
-                href="/tags"
+                href="/store"
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
-                  pathname === "/tags"
+                  pathname === "/store"
                     ? "text-white shadow-lg"
                     : "text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400"
                 }`}
                 style={
-                  pathname === "/tags" ? { backgroundColor: "#F96943" } : {}
+                  pathname === "/store" ? { backgroundColor: "#F96943" } : {}
                 }
               >
-                Etiketlerim
+                Store
               </Link>
               <div className="relative group">
                 <button className="flex items-center text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors px-4 py-2 rounded-full hover:bg-orange-50 dark:hover:bg-orange-900/30">
@@ -128,28 +115,10 @@ const Navbar = () => {
                 </button>
                 <div className="absolute right-0 mt-2 w-48 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-xl border border-white/20 dark:border-gray-600/30 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                   <Link
-                    href="/profile"
-                    className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 rounded-t-xl transition-colors"
-                  >
-                    Profil
-                  </Link>
-                  <Link
-                    href="/leaderboard"
-                    className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-                  >
-                    🏆 Liderlik Tablosu
-                  </Link>
-                  <Link
                     href="/rewards"
                     className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
                   >
                     Ödüller
-                  </Link>
-                  <Link
-                    href="/settings"
-                    className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 rounded-b-xl transition-colors"
-                  >
-                    Hesap Ayarları
                   </Link>
                 </div>
               </div>
@@ -225,22 +194,10 @@ const Navbar = () => {
                     Profil
                   </Link>
                   <Link
-                    href="/leaderboard"
-                    className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-                  >
-                    🏆 Liderlik Tablosu
-                  </Link>
-                  <Link
                     href="/rewards"
                     className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
                   >
                     Ödüller
-                  </Link>
-                  <Link
-                    href="/settings"
-                    className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-                  >
-                    Hesap Ayarları
                   </Link>
                   <button
                     onClick={logout}
@@ -320,14 +277,14 @@ const Navbar = () => {
                 Plan
               </Link>
               <Link
-                href="/profile"
+                href="/store"
                 className={`block px-4 py-2 rounded-full text-sm font-medium ${
-                  pathname === "/profile"
+                  pathname === "/store"
                     ? "text-white shadow-lg"
                     : "text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400"
                 }`}
               >
-                Profil
+                Store
               </Link>
               <Link
                 href="/leaderboard"
@@ -339,22 +296,6 @@ const Navbar = () => {
               >
                 🏆 Liderlik
               </Link>
-              <Link
-                href="/tags"
-                className={`block px-4 py-2 rounded-full text-sm font-medium ${
-                  pathname === "/tags"
-                    ? "text-white shadow-lg"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400"
-                }`}
-              >
-                Etiketlerim
-              </Link>
-              <button
-                onClick={logout}
-                className="block w-full text-left px-4 py-2 text-red-500 dark:text-red-400 hover:bg-white/80 dark:hover:bg-gray-700/50 rounded-b-xl transition-colors"
-              >
-                Çıkış Yap
-              </button>
             </>
           ) : (
             <div className="flex flex-col space-y-2">

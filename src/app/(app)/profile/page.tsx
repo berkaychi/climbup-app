@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
@@ -13,9 +13,13 @@ import { usePlans } from "@/hooks/usePlans";
 import { format, subDays } from "date-fns";
 import { tr } from "date-fns/locale";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import EditProfileModal from "@/components/EditProfileModal";
+import UploadPhotoModal from "@/components/UploadPhotoModal";
 
 const ProfilePage = () => {
   const { user, isLoading } = useAuth();
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isPhotoModalOpen, setPhotoModalOpen] = useState(false);
   const { resolvedTheme } = useTheme();
   const router = useRouter();
   const { userProfile, isLoadingUserProfile } = useUserProfile();
@@ -97,7 +101,10 @@ const ProfilePage = () => {
                 </div>
               )}
             </div>
-            <button className="absolute bottom-0 right-0 w-10 h-10 bg-orange-600 dark:bg-orange-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors">
+            <button
+              onClick={() => setPhotoModalOpen(true)}
+              className="absolute bottom-0 right-0 w-10 h-10 bg-orange-600 dark:bg-orange-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors"
+            >
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -149,7 +156,10 @@ const ProfilePage = () => {
                   )}
                 </div>
               </div>
-              <button className="mt-4 md:mt-0 px-4 py-2 bg-orange-600 dark:bg-orange-500 text-white text-sm font-medium rounded-lg shadow-sm hover:bg-orange-700 dark:hover:bg-orange-600 transition-all duration-300 hover:shadow-lg transform hover:scale-105">
+              <button
+                onClick={() => setEditModalOpen(true)}
+                className="mt-4 md:mt-0 px-4 py-2 bg-orange-600 dark:bg-orange-500 text-white text-sm font-medium rounded-lg shadow-sm hover:bg-orange-700 dark:hover:bg-orange-600 transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+              >
                 <div className="flex items-center">
                   <svg
                     className="w-4 h-4 mr-2"
@@ -574,6 +584,12 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
+      {isEditModalOpen && user && (
+        <EditProfileModal user={user} onClose={() => setEditModalOpen(false)} />
+      )}
+      {isPhotoModalOpen && (
+        <UploadPhotoModal onClose={() => setPhotoModalOpen(false)} />
+      )}
     </div>
   );
 };

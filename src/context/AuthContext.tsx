@@ -30,6 +30,7 @@ export interface AuthContextType {
     newRefreshToken: string,
     userData: User
   ) => void;
+  updateUser: (updatedFields: Partial<User>) => void;
   getAccessToken: () => string | null;
   getRefreshToken: () => string | null;
 }
@@ -100,6 +101,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Bu fonksiyon yönlendirme yapmaz
   };
 
+  const updateUser = (updatedFields: Partial<User>) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const newUser = { ...prev, ...updatedFields };
+      localStorage.setItem("userData", JSON.stringify(newUser));
+      return newUser;
+    });
+  };
+
   const logout = async () => {
     const storedRefreshToken = localStorage.getItem("refreshToken");
     const currentAccessToken = accessToken; // Context state'inden accessToken alınıyor
@@ -152,6 +162,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         logout,
         updateTokensAndUser,
+        updateUser,
         getAccessToken: () => localStorage.getItem("accessToken"),
         getRefreshToken: () => localStorage.getItem("refreshToken"),
       }}
