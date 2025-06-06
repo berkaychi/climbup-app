@@ -83,8 +83,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setAccessToken(newAccessToken);
     setUser(userData);
 
-    // Login sonrası direkt home'a yönlendir
-    router.push("/home");
+    // Yönlendirme için middleware'i tetiklemek üzere sayfayı yenile
+    router.refresh();
   };
 
   const updateTokensAndUser = (

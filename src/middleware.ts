@@ -12,7 +12,13 @@ export function middleware(request: NextRequest) {
   const landingPath = "/"; // Landing page ana yolda
   const loginPath = "/login";
   const registerPath = "/register";
-  const appProtectedPaths = [homePath, "/profile", "/plan", "/leaderboard"]; // Diğer korunmuş uygulama yolları buraya eklenebilir
+  const appProtectedPaths = [
+    homePath,
+    "/profile",
+    "/plan",
+    "/leaderboard",
+    "/settings",
+  ]; // Diğer korunmuş uygulama yolları buraya eklenebilir
 
   // 1. Kullanıcı giriş yapmışsa (accessToken var):
   if (accessToken) {
@@ -47,6 +53,7 @@ export const config = {
     "/leaderboard/:path*",
     "/login",
     "/register",
+    "/settings/:path*", // Ayarlar sayfası için eklendi
     // Not: API yollarını ('/api/:path*') buraya eklemeyin,
     // middleware'in API isteklerini etkilemesini istemeyiz.
   ],

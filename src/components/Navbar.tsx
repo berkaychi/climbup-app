@@ -120,6 +120,12 @@ const Navbar = () => {
                   >
                     Ödüller
                   </Link>
+                  <Link
+                    href="/settings"
+                    className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                  >
+                    Ayarlar
+                  </Link>
                 </div>
               </div>
             </>
@@ -199,8 +205,14 @@ const Navbar = () => {
                   >
                     Ödüller
                   </Link>
+                  <Link
+                    href="/settings"
+                    className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                  >
+                    Ayarlar
+                  </Link>
                   <button
-                    onClick={logout}
+                    onClick={() => logout()}
                     className="block w-full text-left px-4 py-3 text-red-500 dark:text-red-400 hover:bg-white/80 dark:hover:bg-gray-700/50 rounded-b-xl transition-colors"
                   >
                     Çıkış Yap
