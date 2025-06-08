@@ -150,29 +150,12 @@ const TimerPage = () => {
     if (isRunning) return;
 
     if (!activeFocusSession) {
-      const newSession = await createSession();
-      if (newSession) {
-        const endTime = new Date(newSession.currentStateEndTime).getTime();
-        const now = Date.now();
-        const remainingSeconds = Math.max(
-          0,
-          Math.floor((endTime - now) / 1000)
-        );
-        setUiMinutes(Math.floor(remainingSeconds / 60));
-        setUiSeconds(remainingSeconds % 60);
-        setIsRunning(true);
-      }
+      await createSession();
+      // Timer state will be automatically updated by useTimerLogic when session is set
     } else {
       setIsRunning(true);
     }
-  }, [
-    isRunning,
-    activeFocusSession,
-    createSession,
-    setUiMinutes,
-    setUiSeconds,
-    setIsRunning,
-  ]);
+  }, [isRunning, activeFocusSession, createSession, setIsRunning]);
 
   const resetTimer = useCallback(async () => {
     if (isUIBreakActive) {
@@ -206,6 +189,18 @@ const TimerPage = () => {
     }
     setCustomTimerModalOpen(true);
   }, [activeFocusSession, selectedSessionTypeId, sessionTypes, uiMinutes]);
+
+  // Ensure timer shows correct default values on mount
+  useEffect(() => {
+    if (timerMode === "idle" && !activeFocusSession && !isRunning) {
+      // Only set if current values are 0 (avoid unnecessary updates)
+      if (uiMinutes === 0 && uiSeconds === 0) {
+        setUiMinutes(25);
+        setUiSeconds(0);
+        setWorkDuration(25 * 60);
+      }
+    }
+  }, [timerMode, activeFocusSession, isRunning, uiMinutes, uiSeconds]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -351,22 +346,8 @@ const TimerPage = () => {
     if (!ongoingSessionData) return;
 
     const sessionData = ongoingSessionData;
-    const endTime = new Date(sessionData.currentStateEndTime).getTime();
-    const now = Date.now();
-    const remainingSeconds = Math.max(0, Math.floor((endTime - now) / 1000));
-
     setActiveFocusSession(sessionData);
-    setIsRunning(true);
     setSelectedSessionTypeId(sessionData.sessionTypeId ?? null);
-
-    if (now > endTime) {
-      setUiMinutes(0);
-      setUiSeconds(0);
-      setIsRunning(false);
-    } else {
-      setUiMinutes(Math.floor(remainingSeconds / 60));
-      setUiSeconds(remainingSeconds % 60);
-    }
 
     if (sessionData.sessionTypeId) {
       setTimerMode("sessionType");
@@ -385,6 +366,7 @@ const TimerPage = () => {
 
     setShowOngoingSessionModal(false);
     setOngoingSessionData(null);
+    // Timer state will be automatically updated by useTimerLogic when sessionData is set
   };
 
   const handleCancelOngoingSession = async () => {
@@ -411,32 +393,7 @@ const TimerPage = () => {
     setShowCompletionModal(false);
     const newSessionData = await transitionState();
 
-    if (
-      newSessionData &&
-      (newSessionData.status === "Working" || newSessionData.status === "Break")
-    ) {
-      const endTime = new Date(newSessionData.currentStateEndTime).getTime();
-      const now = Date.now();
-      const remainingSeconds = Math.max(0, Math.floor((endTime - now) / 1000));
-      setUiMinutes(Math.floor(remainingSeconds / 60));
-      setUiSeconds(remainingSeconds % 60);
-      setIsRunning(true);
-
-      if (newSessionData.sessionTypeId && sessionTypes) {
-        const currentModeDetails = sessionTypes.find(
-          (st) => st.id === newSessionData.sessionTypeId
-        );
-        if (currentModeDetails) {
-          if (newSessionData.status === "Working") {
-            setWorkDuration(currentModeDetails.workDuration);
-          } else if (newSessionData.status === "Break") {
-            setWorkDuration(currentModeDetails.breakDuration);
-          }
-        }
-      } else if (newSessionData.customDurationSeconds) {
-        setWorkDuration(newSessionData.customDurationSeconds);
-      }
-    } else if (newSessionData?.status === "Completed") {
+    if (newSessionData?.status === "Completed") {
       setIsRunning(false);
       setTimerMode(
         newSessionData.sessionTypeId ? "sessionCompleted" : "customCompleted"
@@ -448,6 +405,7 @@ const TimerPage = () => {
       setCompletionModalType("sessionComplete");
       setShowCompletionModal(true);
     }
+    // Timer state will be automatically updated by useTimerLogic when newSessionData changes
   };
 
   const handleCancelSession = async () => {

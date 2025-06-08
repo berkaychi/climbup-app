@@ -22,7 +22,11 @@ export default function TimerCircle({
   disabled,
 }: TimerCircleProps) {
   const formatTime = (mins: number, secs: number) => {
-    return `${mins.toString().padStart(2, "0")}:${secs
+    // Handle NaN values by defaulting to 0
+    const safeMinutes = isNaN(mins) ? 0 : Math.max(0, Math.floor(mins));
+    const safeSeconds = isNaN(secs) ? 0 : Math.max(0, Math.floor(secs));
+
+    return `${safeMinutes.toString().padStart(2, "0")}:${safeSeconds
       .toString()
       .padStart(2, "0")}`;
   };

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Pacifico } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import { SWRProvider } from "@/components/SWRProvider";
 import "./globals.css";
 
@@ -36,7 +37,9 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <AuthProvider>
-            <SWRProvider>{children}</SWRProvider>
+            <QueryProvider>
+              <SWRProvider>{children}</SWRProvider>
+            </QueryProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

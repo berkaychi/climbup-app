@@ -11,7 +11,7 @@ export const useTimerLogic = (
   onBreakComplete: () => void,
   onCustomWorkComplete: () => void
 ) => {
-  // Timer states
+  // Timer states with safe defaults
   const [uiMinutes, setUiMinutes] = useState(25);
   const [uiSeconds, setUiSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -138,6 +138,31 @@ export const useTimerLogic = (
     onCustomWorkComplete,
   ]);
 
+  // Session state change effect - starts timer when session transitions
+  useEffect(() => {
+    if (activeFocusSession && activeFocusSession.currentStateEndTime) {
+      const endTime = new Date(
+        activeFocusSession.currentStateEndTime
+      ).getTime();
+      const now = Date.now();
+      const remainingSeconds = Math.max(0, Math.floor((endTime - now) / 1000));
+
+      // Always update timer state when session changes
+      if (remainingSeconds > 0) {
+        setUiMinutes(Math.floor(remainingSeconds / 60));
+        setUiSeconds(remainingSeconds % 60);
+        if (!isRunning) {
+          setIsRunning(true);
+        }
+      } else {
+        // Session time has already expired
+        setUiMinutes(0);
+        setUiSeconds(0);
+        setIsRunning(false);
+      }
+    }
+  }, [activeFocusSession]);
+
   // UI-only break timer effect
   useEffect(() => {
     if (isUIBreakActive) {
@@ -199,33 +224,58 @@ export const useTimerLogic = (
     }
   };
 
-  // Progress calculations
+  // Progress calculations with NaN protection
+  const safeUiMinutes = isNaN(uiMinutes) ? 0 : uiMinutes;
+  const safeUiSeconds = isNaN(uiSeconds) ? 0 : uiSeconds;
+  const safeWorkDuration =
+    isNaN(workDuration) || workDuration <= 0 ? 25 * 60 : workDuration;
+
   const progress =
-    workDuration > 0
-      ? ((workDuration - (uiMinutes * 60 + uiSeconds)) / workDuration) * 100
+    safeWorkDuration > 0
+      ? Math.max(
+          0,
+          Math.min(
+            100,
+            ((safeWorkDuration - (safeUiMinutes * 60 + safeUiSeconds)) /
+              safeWorkDuration) *
+              100
+          )
+        )
       : 0;
 
+  const safeUiBreakMinutes = isNaN(uiBreakMinutes) ? 0 : uiBreakMinutes;
+  const safeUiBreakSeconds = isNaN(uiBreakSeconds) ? 0 : uiBreakSeconds;
+  const safeUiBreakDuration =
+    isNaN(uiBreakDuration) || uiBreakDuration <= 0 ? 5 * 60 : uiBreakDuration;
+
   const uiBreakProgress =
-    isUIBreakActive && uiBreakDuration > 0
-      ? ((uiBreakDuration - (uiBreakMinutes * 60 + uiBreakSeconds)) /
-          uiBreakDuration) *
-        100
+    isUIBreakActive && safeUiBreakDuration > 0
+      ? Math.max(
+          0,
+          Math.min(
+            100,
+            ((safeUiBreakDuration -
+              (safeUiBreakMinutes * 60 + safeUiBreakSeconds)) /
+              safeUiBreakDuration) *
+              100
+          )
+        )
       : 0;
 
   const currentProgress = isUIBreakActive ? uiBreakProgress : progress;
 
   return {
-    // Timer state
-    uiMinutes,
-    uiSeconds,
+    // Timer state (with safe values)
+    uiMinutes: safeUiMinutes,
+    uiSeconds: safeUiSeconds,
     isRunning,
-    workDuration,
+    workDuration: safeWorkDuration,
 
-    // UI Break state
+    // UI Break state (with safe values)
     isUIBreakActive,
-    uiBreakMinutes,
-    uiBreakSeconds,
-    uiBreakDuration,
+    uiBreakMinutes: safeUiBreakMinutes,
+    uiBreakSeconds: safeUiBreakSeconds,
+    uiBreakDuration: safeUiBreakDuration,
 
     // Progress
     progress,

@@ -1,7 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth, AuthContextType } from "../context/AuthContext";
+import { useAuth, User } from "../context/AuthContext";
+
+interface AuthActions {
+  getAccessToken: () => string | null;
+  getRefreshToken: () => string | null;
+  updateTokensAndUser: (
+    newAccessToken: string,
+    newRefreshToken: string,
+    userData: User
+  ) => void;
+  logout: () => void;
+}
 import { TagDto } from "./useTags";
 import {
   FocusSessionResponseDto,
@@ -37,7 +48,7 @@ export const useSessionManagement = (
         const response = await fetchWithAuth(
           `${API_BASE_URL}/api/FocusSession/ongoing`,
           {},
-          authContext as AuthContextType
+          authContext as AuthActions
         );
 
         if (response.ok) {
@@ -107,11 +118,13 @@ export const useSessionManagement = (
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(createDto),
         },
-        authContext as AuthContextType
+        authContext as AuthActions
       );
 
       if (response.ok) {
-        const newSessionData: FocusSessionResponseDto = await response.json();
+        const responseData = await response.json();
+        // Extract the actual session data from the nested response
+        const newSessionData: FocusSessionResponseDto = responseData.data;
         setActiveFocusSession(newSessionData);
         return newSessionData;
       } else {
@@ -137,7 +150,7 @@ export const useSessionManagement = (
             status: "Cancelled",
           } as UpdateFocusSessionStatusDto),
         },
-        authContext as AuthContextType
+        authContext as AuthActions
       );
 
       return response.ok;
@@ -160,7 +173,7 @@ export const useSessionManagement = (
             status: "Completed",
           } as UpdateFocusSessionStatusDto),
         },
-        authContext as AuthContextType
+        authContext as AuthActions
       );
 
       return response.ok;
@@ -180,11 +193,13 @@ export const useSessionManagement = (
           method: "POST",
           headers: { "Content-Type": "application/json" },
         },
-        authContext as AuthContextType
+        authContext as AuthActions
       );
 
       if (response.ok) {
-        const newSessionData: FocusSessionResponseDto = await response.json();
+        const responseData = await response.json();
+        // Extract the actual session data from the nested response
+        const newSessionData: FocusSessionResponseDto = responseData.data;
         setActiveFocusSession(newSessionData);
         return newSessionData;
       } else {
