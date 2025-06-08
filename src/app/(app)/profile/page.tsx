@@ -15,18 +15,11 @@ import { tr } from "date-fns/locale";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import EditProfileModal from "@/components/EditProfileModal";
 import UploadPhotoModal from "@/components/UploadPhotoModal";
-import DeleteAccountModal from "@/components/DeleteAccountModal";
 
 const ProfilePage = () => {
-  const { user, isLoading, getAccessToken } = useAuth();
+  const { user, isLoading } = useAuth();
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isPhotoModalOpen, setPhotoModalOpen] = useState(false);
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
-  const [deletionStatusMessage, setDeletionStatusMessage] = useState<{
-    text: string;
-    type: "success" | "error";
-  } | null>(null);
   const { resolvedTheme } = useTheme();
   const router = useRouter();
   const { userProfile, isLoadingUserProfile } = useUserProfile();
@@ -85,68 +78,6 @@ const ProfilePage = () => {
 
   const formatHours = (seconds: number) => {
     return Math.round((seconds / 3600) * 10) / 10;
-  };
-
-  const handleInitiateAccountDeletion = async () => {
-    if (!user) return;
-    setIsDeletingAccount(true);
-    setDeletionStatusMessage(null);
-    const token = getAccessToken();
-
-    if (!token) {
-      setDeletionStatusMessage({
-        text: "Kimlik doğrulama tokenı bulunamadı. Lütfen tekrar giriş yapın.",
-        type: "error",
-      });
-      setIsDeletingAccount(false);
-      setDeleteModalOpen(false);
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/Users/me/initiate-deletion`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      setDeleteModalOpen(false);
-
-      if (response.ok) {
-        const data = await response.json();
-        setDeletionStatusMessage({
-          text:
-            data.message ||
-            "Hesap silme onay e-postası adresinize gönderildi. Lütfen e-postanızı kontrol edin.",
-          type: "success",
-        });
-      } else {
-        const errorData = await response.json().catch(() => ({
-          message:
-            "Hesap silme işlemi başlatılamadı. Lütfen daha sonra tekrar deneyin.",
-        }));
-        console.error("Error initiating account deletion:", errorData);
-        setDeletionStatusMessage({
-          text:
-            errorData.message || `Bir hata oluştu (Kod: ${response.status}).`,
-          type: "error",
-        });
-      }
-    } catch (error) {
-      console.error("Error initiating account deletion:", error);
-      setDeleteModalOpen(false);
-      setDeletionStatusMessage({
-        text: "Ağ hatası veya beklenmedik bir sorun oluştu. Lütfen internet bağlantınızı kontrol edin.",
-        type: "error",
-      });
-    } finally {
-      setIsDeletingAccount(false);
-    }
   };
 
   return (
@@ -654,67 +585,11 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Danger Zone - Account Deletion */}
-      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-        <div className="max-w-2xl mx-auto bg-red-50/50 dark:bg-gray-800/30 p-6 rounded-xl shadow-md border border-red-200 dark:border-red-500/30">
-          <h2 className="text-2xl font-semibold text-red-700 dark:text-red-400 mb-3">
-            Tehlikeli Alan
-          </h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-6">
-            Hesabınızı silmek, tüm verilerinizin (planlar, istatistikler,
-            ayarlar vb.) kalıcı olarak kaybolmasına neden olur. Bu işlem geri
-            alınamaz.
-          </p>
-
-          {deletionStatusMessage && (
-            <div
-              className={`mb-4 p-3 rounded-md text-sm ${
-                deletionStatusMessage.type === "success"
-                  ? "bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-500/50"
-                  : "bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-500/50"
-              }`}
-            >
-              {deletionStatusMessage.text}
-            </div>
-          )}
-
-          <button
-            onClick={() => {
-              setDeletionStatusMessage(null);
-              setDeleteModalOpen(true);
-            }}
-            disabled={isDeletingAccount}
-            className="w-full sm:w-auto px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors disabled:opacity-70 flex items-center justify-center"
-          >
-            {isDeletingAccount && (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-            )}
-            Hesabımı Silme İşlemini Başlat
-          </button>
-          <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-            Bu butona tıkladığınızda, hesap silme işlemini onaylamanız için
-            e-posta adresinize bir bağlantı gönderilecektir.
-          </p>
-        </div>
-      </div>
-
       {isEditModalOpen && user && (
         <EditProfileModal user={user} onClose={() => setEditModalOpen(false)} />
       )}
       {isPhotoModalOpen && (
         <UploadPhotoModal onClose={() => setPhotoModalOpen(false)} />
-      )}
-      {isDeleteModalOpen && (
-        <DeleteAccountModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => {
-            if (!isDeletingAccount) {
-              setDeleteModalOpen(false);
-            }
-          }}
-          onConfirm={handleInitiateAccountDeletion}
-          isLoading={isDeletingAccount}
-        />
       )}
     </div>
   );
