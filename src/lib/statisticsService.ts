@@ -1,7 +1,8 @@
 import { fetchWithAuth } from "./authFetch";
 import { AuthContextType } from "../context/AuthContext";
+import { API_CONFIG, API_ENDPOINTS } from "@/config/api";
 
-const API_BASE = "https://climbupapi.duckdns.org/api";
+const API_BASE = API_CONFIG.BASE_URL;
 
 export interface UserStatsSummary {
   totalFocusDurationSeconds: number;
@@ -43,7 +44,7 @@ export class StatisticsService {
   // Get user statistics summary
   async getUserStatsSummary(): Promise<UserStatsSummary> {
     const response = await fetchWithAuth(
-      `${API_BASE}/Statistics/summary`,
+      `${API_BASE}${API_ENDPOINTS.STATISTICS.SUMMARY}`,
       {},
       this.authHelpers
     );

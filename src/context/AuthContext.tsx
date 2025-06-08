@@ -1,6 +1,5 @@
 "use client";
 
-import Cookies from "js-cookie";
 import React, {
   createContext,
   useContext,
@@ -9,6 +8,7 @@ import React, {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
+import { tokenManager } from "@/lib/auth/tokenManager";
 
 export interface User {
   id: string;
@@ -44,29 +44,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // Sayfa yüklendiğinde localStorage'dan token ve kullanıcı bilgilerini kontrol et
-    const storedToken = localStorage.getItem("accessToken");
+    // Migrate old tokens first
+    tokenManager.migrateOldTokens();
+
+    // Sayfa yüklendiğinde secure storage'dan token ve kullanıcı bilgilerini kontrol et
+    const storedToken = tokenManager.getAccessToken();
     const storedUser = localStorage.getItem("userData");
-    const storedRefreshToken = localStorage.getItem("refreshToken");
+    const storedRefreshToken = tokenManager.getRefreshToken();
+
+    console.log(
+      "Auth init - Token:",
+      !!storedToken,
+      "User:",
+      !!storedUser,
+      "Refresh:",
+      !!storedRefreshToken
+    );
 
     if (storedToken && storedUser && storedRefreshToken) {
       try {
+        const parsedUser = JSON.parse(storedUser);
         setAccessToken(storedToken);
-        setUser(JSON.parse(storedUser));
+        setUser(parsedUser);
+        console.log(
+          "Auth restored successfully for user:",
+          parsedUser.userName
+        );
       } catch (error) {
         console.error("Error parsing stored user data:", error);
         // Hatalı veri varsa temizle
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        tokenManager.clearAllTokens();
         localStorage.removeItem("userData");
       }
     } else if (storedToken || storedUser || storedRefreshToken) {
       // Eksik token verileri varsa hepsini temizle
       console.warn("Incomplete token data found, cleaning up...");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      tokenManager.clearAllTokens();
       localStorage.removeItem("userData");
-      Cookies.remove("accessToken", { path: "/" });
     }
     setIsLoading(false);
   }, []);
@@ -76,9 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     newRefreshToken: string,
     userData: User
   ) => {
-    localStorage.setItem("accessToken", newAccessToken);
-    Cookies.set("accessToken", newAccessToken, { expires: 7, path: "/" });
-    localStorage.setItem("refreshToken", newRefreshToken); // Refresh token'ı da saklayalım
+    tokenManager.setTokens(newAccessToken, newRefreshToken);
     localStorage.setItem("userData", JSON.stringify(userData));
     setAccessToken(newAccessToken);
     setUser(userData);
@@ -92,9 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     newRefreshToken: string,
     userData: User
   ) => {
-    localStorage.setItem("accessToken", newAccessToken);
-    Cookies.set("accessToken", newAccessToken, { expires: 7, path: "/" });
-    localStorage.setItem("refreshToken", newRefreshToken);
+    tokenManager.setTokens(newAccessToken, newRefreshToken);
     localStorage.setItem("userData", JSON.stringify(userData));
     setAccessToken(newAccessToken);
     setUser(userData);
@@ -111,7 +121,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async (shouldRedirect: boolean = true) => {
-    const storedRefreshToken = localStorage.getItem("refreshToken");
+    const storedRefreshToken = tokenManager.getRefreshToken();
     const currentAccessToken = accessToken; // Context state'inden accessToken alınıyor
 
     if (storedRefreshToken && currentAccessToken) {
@@ -144,9 +154,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     }
 
-    localStorage.removeItem("accessToken");
-    Cookies.remove("accessToken", { path: "/" });
-    localStorage.removeItem("refreshToken");
+    tokenManager.clearAllTokens();
     localStorage.removeItem("userData");
     setAccessToken(null);
     setUser(null);
@@ -165,8 +173,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout,
         updateTokensAndUser,
         updateUser,
-        getAccessToken: () => localStorage.getItem("accessToken"),
-        getRefreshToken: () => localStorage.getItem("refreshToken"),
+        getAccessToken: () => tokenManager.getAccessToken(),
+        getRefreshToken: () => tokenManager.getRefreshToken(),
       }}
     >
       {children}

@@ -1,4 +1,5 @@
 import { User } from "../context/AuthContext";
+import { API_CONFIG, API_ENDPOINTS } from "@/config/api";
 
 interface AuthActions {
   getAccessToken: () => string | null;
@@ -43,7 +44,7 @@ export async function fetchWithAuth(
 
         try {
           const refreshResponse = await fetch(
-            "https://climbupapi.duckdns.org/api/Auth/refresh",
+            `${API_CONFIG.BASE_URL}${API_ENDPOINTS.AUTH.REFRESH}`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },

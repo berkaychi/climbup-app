@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "./authFetch";
 import { AuthContextType } from "../context/AuthContext";
+import { API_CONFIG, API_ENDPOINTS } from "@/config/api";
 import {
   Plan,
   PlanTemplate,
@@ -11,7 +12,7 @@ import {
   PlanFilters,
 } from "../types/plan";
 
-const API_BASE = "https://climbupapi.duckdns.org/api";
+const API_BASE = API_CONFIG.BASE_URL;
 
 export class PlanService {
   constructor(private authHelpers: AuthContextType) {}
@@ -28,7 +29,9 @@ export class PlanService {
     // as ToDo API may not support date range queries
 
     const queryString = params.toString();
-    const url = `${API_BASE}/ToDo${queryString ? `?${queryString}` : ""}`;
+    const url = `${API_BASE}${API_ENDPOINTS.PLANS.BASE}${
+      queryString ? `?${queryString}` : ""
+    }`;
 
     const response = await fetchWithAuth(url, {}, this.authHelpers);
 
