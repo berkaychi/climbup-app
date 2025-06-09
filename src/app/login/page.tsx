@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 // import { useRouter } from "next/navigation"; // Artık kullanılmıyor
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/stores/authStore";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const LoginPage = () => {

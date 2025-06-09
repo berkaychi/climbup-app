@@ -1,5 +1,5 @@
 import { fetchWithAuth } from "./authFetch";
-import { AuthContextType } from "../context/AuthContext";
+import { AuthContextType } from "../stores/authStore";
 import { API_CONFIG, API_ENDPOINTS } from "@/config/api";
 
 const API_BASE = API_CONFIG.BASE_URL;
@@ -67,7 +67,7 @@ export class StatisticsService {
     });
 
     const response = await fetchWithAuth(
-      `${API_BASE}/Statistics/period?${params}`,
+      `${API_BASE}${API_ENDPOINTS.STATISTICS.PERIOD}?${params}`,
       {},
       this.authHelpers
     );
@@ -90,7 +90,7 @@ export class StatisticsService {
     });
 
     const response = await fetchWithAuth(
-      `${API_BASE}/Statistics/tags?${params}`,
+      `${API_BASE}${API_ENDPOINTS.STATISTICS.TAGS}?${params}`,
       {},
       this.authHelpers
     );
@@ -107,7 +107,7 @@ export class StatisticsService {
     const params = new URLSearchParams({ date });
 
     const response = await fetchWithAuth(
-      `${API_BASE}/Statistics/daily?${params}`,
+      `${API_BASE}${API_ENDPOINTS.STATISTICS.DAILY}?${params}`,
       {},
       this.authHelpers
     );
@@ -130,7 +130,7 @@ export class StatisticsService {
     });
 
     const response = await fetchWithAuth(
-      `${API_BASE}/Statistics/daily-range?${params}`,
+      `${API_BASE}${API_ENDPOINTS.STATISTICS.DAILY_RANGE}?${params}`,
       {},
       this.authHelpers
     );

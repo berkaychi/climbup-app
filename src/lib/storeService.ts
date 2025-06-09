@@ -1,5 +1,5 @@
 import { fetchWithAuth } from "./authFetch";
-import { AuthContextType } from "../context/AuthContext";
+import { AuthContextType } from "../stores/authStore";
 import {
   PurchaseStoreItemRequestDto,
   PurchaseStoreItemResponseDto,

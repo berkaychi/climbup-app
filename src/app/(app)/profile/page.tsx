@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/stores/authStore";
 import { useTheme } from "@/context/ThemeContext";
 import {
   useUserStatsSummary,

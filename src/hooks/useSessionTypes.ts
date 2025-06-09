@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { swrFetcher } from "../lib/swrFetchers";
-import { useAuth, AuthContextType } from "../context/AuthContext";
+import { useAuth } from "../stores/authStore";
 
 export interface SessionTypeResponseDto {
   id: number; // Updated to number
@@ -14,15 +14,15 @@ export interface SessionTypeResponseDto {
 }
 
 const useSessionTypes = () => {
-  const authContext = useAuth();
+  const { user } = useAuth();
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const swrKey =
-    authContext.user && API_BASE_URL ? `${API_BASE_URL}/api/SessionType` : null;
+    user && API_BASE_URL ? `${API_BASE_URL}/api/SessionType` : null;
 
   const { data, error, isLoading, mutate } = useSWR<SessionTypeResponseDto[]>(
     swrKey,
-    (url: string) => swrFetcher(url, authContext as AuthContextType)
+    swrFetcher
   );
 
   const sessionTypes = data?.filter((st) => st.isActive);

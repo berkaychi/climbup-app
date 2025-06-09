@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useAuth, AuthContextType } from "../context/AuthContext";
+import { useAuth } from "../stores/authStore";
 import { swrFetcher } from "../lib/swrFetchers";
 import {
   BadgeDefinitionResponseDto,
@@ -33,12 +33,11 @@ const transformCloudinaryUrl = (originalUrl: string): string => {
 
 // Hook to get all badge definitions (gallery)
 export function useBadgeDefinitions() {
-  const authContext = useAuth();
   const swrKey = API_BASE_URL ? `${API_BASE_URL}/api/badges/definitions` : null;
 
   const { data, error, isLoading, mutate } = useSWR<
     BadgeDefinitionResponseDto[]
-  >(swrKey, (url: string) => swrFetcher(url, authContext as AuthContextType), {
+  >(swrKey, swrFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
   });
@@ -62,13 +61,12 @@ export function useBadgeDefinitions() {
 
 // Hook to get user's earned badges
 export function useUserBadges() {
-  const authContext = useAuth();
-  const swrKey =
-    authContext.user && API_BASE_URL ? `${API_BASE_URL}/api/badges/me` : null;
+  const { user } = useAuth();
+  const swrKey = user && API_BASE_URL ? `${API_BASE_URL}/api/badges/me` : null;
 
   const { data, error, isLoading, mutate } = useSWR<UserBadgeResponseDto[]>(
     swrKey,
-    (url: string) => swrFetcher(url, authContext as AuthContextType),
+    swrFetcher,
     {
       revalidateOnFocus: true,
       revalidateOnReconnect: true,
@@ -94,15 +92,13 @@ export function useUserBadges() {
 
 // NEW: Hook to get current user's badge progress (real-time tracking)
 export function useUserBadgeProgress() {
-  const authContext = useAuth();
+  const { user } = useAuth();
   const swrKey =
-    authContext.user && API_BASE_URL
-      ? `${API_BASE_URL}/api/badges/me/progress`
-      : null;
+    user && API_BASE_URL ? `${API_BASE_URL}/api/badges/me/progress` : null;
 
   const { data, error, isLoading, mutate } = useSWR<
     BadgeDefinitionResponseDto[]
-  >(swrKey, (url: string) => swrFetcher(url, authContext as AuthContextType), {
+  >(swrKey, swrFetcher, {
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
     refreshInterval: 30000, // Refresh every 30 seconds for real-time progress
@@ -127,7 +123,6 @@ export function useUserBadgeProgress() {
 
 // Hook to get specific user's badge progress (for viewing other users)
 export function useSpecificUserBadgeProgress(userId: string | null) {
-  const authContext = useAuth();
   const swrKey =
     userId && API_BASE_URL
       ? `${API_BASE_URL}/api/users/${userId}/badges/progress`
@@ -135,7 +130,7 @@ export function useSpecificUserBadgeProgress(userId: string | null) {
 
   const { data, error, isLoading, mutate } = useSWR<
     BadgeDefinitionResponseDto[]
-  >(swrKey, (url: string) => swrFetcher(url, authContext as AuthContextType), {
+  >(swrKey, swrFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
   });

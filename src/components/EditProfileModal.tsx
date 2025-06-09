@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuth, User } from "@/context/AuthContext";
+import { useAuth, User } from "@/stores/authStore";
 
 interface EditProfileModalProps {
   user: User;

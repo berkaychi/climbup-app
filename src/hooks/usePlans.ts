@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/stores/authStore";
 import { PlanService } from "@/lib/planService";
 import {
   Plan,
@@ -28,17 +28,18 @@ export function usePlans(filters?: PlanFilters) {
   const authHelpers = useAuth();
   const planService = useMemo(
     () => new PlanService(authHelpers),
-    [authHelpers]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id] // Only depend on user ID to prevent unnecessary re-renders
   );
 
   const { data, error, isLoading, mutate } = useSWR(
     authHelpers.user ? createKey("/plans", filters) : null,
     () => planService.getPlans(filters),
     {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
+      revalidateOnFocus: true, // ✅ Enable sync when returning to tab
+      revalidateOnReconnect: true, // ✅ Enable sync when reconnecting
       dedupingInterval: 60000, // 1 minute
-      refreshInterval: 0, // Disable automatic refresh
+      refreshInterval: 0, // Keep disabled for performance
     }
   );
 
@@ -86,7 +87,10 @@ export function usePlans(filters?: PlanFilters) {
   );
 
   const deletePlan = useCallback(
-    async (id: string) => {
+    async (
+      id: string,
+      showAlert?: (message: string, type: "error") => void
+    ) => {
       try {
         await planService.deletePlan(id);
         // Optimistically update the cache
@@ -97,18 +101,26 @@ export function usePlans(filters?: PlanFilters) {
       } catch (error) {
         console.error("Plan silme hatası:", error);
         // Show user-friendly error messages
-        if (error instanceof Error) {
-          if (error.message.includes("Tamamlanan planlar silinemez")) {
-            alert("Tamamlanan planlar silinemez.");
-          } else if (
-            error.message.includes("Süresi geçmiş planlar silinemez")
-          ) {
-            alert("Süresi geçmiş planlar silinemez.");
+        if (showAlert) {
+          if (error instanceof Error) {
+            if (error.message.includes("Tamamlanan planlar silinemez")) {
+              showAlert("Tamamlanan planlar silinemez.", "error");
+            } else if (
+              error.message.includes("Süresi geçmiş planlar silinemez")
+            ) {
+              showAlert("Süresi geçmiş planlar silinemez.", "error");
+            } else {
+              showAlert(
+                "Plan silinirken bir hata oluştu. Lütfen tekrar deneyin.",
+                "error"
+              );
+            }
           } else {
-            alert("Plan silinirken bir hata oluştu. Lütfen tekrar deneyin.");
+            showAlert(
+              "Plan silinirken bir hata oluştu. Lütfen tekrar deneyin.",
+              "error"
+            );
           }
-        } else {
-          alert("Plan silinirken bir hata oluştu. Lütfen tekrar deneyin.");
         }
         throw error;
       }
@@ -117,7 +129,11 @@ export function usePlans(filters?: PlanFilters) {
   );
 
   const markComplete = useCallback(
-    async (id: string, isCompleted: boolean) => {
+    async (
+      id: string,
+      isCompleted: boolean,
+      showAlert?: (message: string, type: "error") => void
+    ) => {
       try {
         const completedPlan = await planService.togglePlanStatus(
           id,
@@ -134,17 +150,21 @@ export function usePlans(filters?: PlanFilters) {
       } catch (error) {
         console.error("Plan status değiştirme hatası:", error);
         // Show user-friendly error message for uncomplete attempts
-        if (
-          error instanceof Error &&
-          error.message.includes("tekrar açılamaz")
-        ) {
-          alert(
-            "Tamamlanan planlar tekrar açılamaz. Yeni bir plan oluşturabilirsiniz."
-          );
-        } else {
-          alert(
-            "Plan durumu değiştirilirken bir hata oluştu. Lütfen tekrar deneyin."
-          );
+        if (showAlert) {
+          if (
+            error instanceof Error &&
+            error.message.includes("tekrar açılamaz")
+          ) {
+            showAlert(
+              "Tamamlanan planlar tekrar açılamaz. Yeni bir plan oluşturabilirsiniz.",
+              "error"
+            );
+          } else {
+            showAlert(
+              "Plan durumu değiştirilirken bir hata oluştu. Lütfen tekrar deneyin.",
+              "error"
+            );
+          }
         }
         throw error;
       }
@@ -169,7 +189,8 @@ export function useDailyPlans(date: string) {
   const authHelpers = useAuth();
   const planService = useMemo(
     () => new PlanService(authHelpers),
-    [authHelpers]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id] // Only depend on user ID to prevent unnecessary re-renders
   );
 
   const { data, error, isLoading, mutate } = useSWR(
@@ -194,14 +215,16 @@ export function useWeeklyProgress(weekStart: string) {
   const authHelpers = useAuth();
   const planService = useMemo(
     () => new PlanService(authHelpers),
-    [authHelpers]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id] // Only depend on user ID to prevent unnecessary re-renders
   );
 
   const { data, error, isLoading, mutate } = useSWR(
     authHelpers.user ? `/plans/weekly-progress/${weekStart}` : null,
     () => planService.getWeeklyProgress(weekStart),
     {
-      revalidateOnFocus: false,
+      revalidateOnFocus: true, // ✅ Enable sync when returning to tab
+      revalidateOnReconnect: true, // ✅ Enable sync when reconnecting
       dedupingInterval: 300000, // 5 minutes
     }
   );
@@ -219,14 +242,16 @@ export function usePlanTemplates() {
   const authHelpers = useAuth();
   const planService = useMemo(
     () => new PlanService(authHelpers),
-    [authHelpers]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id] // Only depend on user ID to prevent unnecessary re-renders
   );
 
   const { data, error, isLoading, mutate } = useSWR(
     authHelpers.user ? "/plan-templates" : null,
     () => planService.getPlanTemplates(),
     {
-      revalidateOnFocus: false,
+      revalidateOnFocus: true, // ✅ Enable sync when returning to tab
+      revalidateOnReconnect: true, // ✅ Enable sync when reconnecting
       dedupingInterval: 600000, // 10 minutes
     }
   );
@@ -295,7 +320,8 @@ export function usePlan(id: string | null) {
   const authHelpers = useAuth();
   const planService = useMemo(
     () => new PlanService(authHelpers),
-    [authHelpers]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id] // Only depend on user ID to prevent unnecessary re-renders
   );
 
   const { data, error, isLoading, mutate } = useSWR(

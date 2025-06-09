@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useAuth, AuthContextType } from "../context/AuthContext";
+import { useAuth } from "../stores/authStore";
 import { swrFetcher } from "../lib/swrFetchers";
 import { UserStoreItemResponseDto } from "../types/store";
 
@@ -14,7 +14,7 @@ export function useUserStoreItems() {
 
   const { data, error, isLoading, mutate } = useSWR<UserStoreItemResponseDto[]>(
     swrKey,
-    (url: string) => swrFetcher(url, authContext as AuthContextType),
+    swrFetcher,
     {
       revalidateOnFocus: true,
       revalidateOnReconnect: true,

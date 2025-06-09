@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image"; // Profil resmi için
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/stores/authStore";
 import { usePathname } from "next/navigation"; // Aktif linki belirlemek için
 import ThemeToggle from "./ThemeToggle";
 import { useUserProfile } from "@/hooks/useUserProfile";

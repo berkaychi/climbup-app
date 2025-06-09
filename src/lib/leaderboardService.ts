@@ -1,7 +1,8 @@
 import { fetchWithAuth } from "./authFetch";
-import { AuthContextType } from "../context/AuthContext";
+import { AuthContextType } from "../stores/authStore";
+import { API_CONFIG, API_ENDPOINTS } from "@/config/api";
 
-const API_BASE = "https://climbupapi.duckdns.org/api";
+const API_BASE = API_CONFIG.BASE_URL;
 
 export enum LeaderboardSortCriteria {
   TotalFocusDuration = "TotalFocusDuration",
@@ -63,7 +64,7 @@ export class LeaderboardService {
     }
 
     const queryString = params.toString();
-    const url = `${API_BASE}/Leaderboard${
+    const url = `${API_BASE}${API_ENDPOINTS.LEADERBOARD}${
       queryString ? `?${queryString}` : ""
     }`;
 

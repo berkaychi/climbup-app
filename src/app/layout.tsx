@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Pacifico } from "next/font/google";
-import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { SWRProvider } from "@/components/SWRProvider";
+import { AuthInitializer } from "@/components/providers/AuthInitializer";
 import "./globals.css";
 
 const inter = Inter({
@@ -36,11 +36,11 @@ export default function RootLayout({
         className={`${inter.variable} ${pacifico.variable} font-sans antialiased`}
       >
         <ThemeProvider>
-          <AuthProvider>
+          <AuthInitializer>
             <QueryProvider>
               <SWRProvider>{children}</SWRProvider>
             </QueryProvider>
-          </AuthProvider>
+          </AuthInitializer>
         </ThemeProvider>
       </body>
     </html>

@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/stores/authStore";
 import {
   LeaderboardService,
   LeaderboardFilters,
@@ -10,7 +10,8 @@ export function useLeaderboard(filters?: LeaderboardFilters) {
   const authHelpers = useAuth();
   const leaderboardService = useMemo(
     () => new LeaderboardService(authHelpers),
-    [authHelpers]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id] // Only depend on user ID to prevent unnecessary re-renders
   );
 
   // Create a cache key based on filters

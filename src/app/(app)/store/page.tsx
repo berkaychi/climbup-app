@@ -2,10 +2,12 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/stores/authStore";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useStoreItems } from "@/hooks/useStoreItems";
 import { StoreService } from "@/lib/storeService";
+import { useModal } from "@/hooks/useModal";
+import Modal from "@/components/Modal";
 
 const StorePage = () => {
   const authHelpers = useAuth();
@@ -15,6 +17,7 @@ const StorePage = () => {
     useUserProfile();
   const { storeItems, isLoadingStoreItems, storeItemsError, mutateStoreItems } =
     useStoreItems();
+  const { modal, showAlert, handleConfirm, handleCancel } = useModal();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -47,17 +50,17 @@ const StorePage = () => {
   const handlePurchase = async (itemId: number, price: number) => {
     const balance = userProfile?.stepstones ?? 0;
     if (balance < price) {
-      alert("Yetersiz stepstone bakiyesi.");
+      showAlert("Yetersiz stepstone bakiyesi.", "error");
       return;
     }
     try {
       const response = await StoreService.purchase(itemId, authHelpers);
-      alert(response.message);
+      showAlert(response.message, "success");
       mutateUserProfile();
       mutateStoreItems();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
-      alert(message || "Satın alma sırasında bir hata oluştu.");
+      showAlert(message || "Satın alma sırasında bir hata oluştu.", "error");
     }
   };
 
@@ -107,6 +110,9 @@ const StorePage = () => {
           </p>
         )}
       </div>
+
+      {/* Modal for alerts */}
+      <Modal modal={modal} onConfirm={handleConfirm} onCancel={handleCancel} />
     </div>
   );
 };

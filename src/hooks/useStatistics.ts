@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/stores/authStore";
 import { StatisticsService } from "@/lib/statisticsService";
 import { useMemo } from "react";
 
@@ -8,7 +8,8 @@ export function useUserStatsSummary() {
   const authHelpers = useAuth();
   const statsService = useMemo(
     () => new StatisticsService(authHelpers),
-    [authHelpers]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id] // Only depend on user ID to prevent unnecessary re-renders
   );
 
   const { data, error, isLoading, mutate } = useSWR(
@@ -44,7 +45,8 @@ export function useTagFocusStats(startDate: string, endDate: string) {
   const authHelpers = useAuth();
   const statsService = useMemo(
     () => new StatisticsService(authHelpers),
-    [authHelpers]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id] // Only depend on user ID to prevent unnecessary re-renders
   );
 
   const { data, error, isLoading, mutate } = useSWR(
@@ -69,7 +71,8 @@ export function useDailyRangeStats(startDate: string, endDate: string) {
   const authHelpers = useAuth();
   const statsService = useMemo(
     () => new StatisticsService(authHelpers),
-    [authHelpers]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id] // Only depend on user ID to prevent unnecessary re-renders
   );
 
   const { data, error, isLoading, mutate } = useSWR(

@@ -1,7 +1,8 @@
 import { fetchWithAuth } from "./authFetch";
-import { AuthContextType } from "../context/AuthContext";
+import { AuthContextType } from "../stores/authStore";
+import { API_CONFIG, API_ENDPOINTS } from "@/config/api";
 
-const API_BASE = "https://climbupapi.duckdns.org/api";
+const API_BASE = API_CONFIG.BASE_URL;
 
 export enum TaskType {
   DailyFocusDuration = 1,
@@ -44,7 +45,7 @@ export class TaskService {
   constructor(private authHelpers: AuthContextType) {}
 
   async getCurrentTasks(): Promise<CurrentTasksResponse> {
-    const url = `${API_BASE}/task/my-current`;
+    const url = `${API_BASE}${API_ENDPOINTS.TASKS}`;
 
     const response = await fetchWithAuth(url, {}, this.authHelpers);
 

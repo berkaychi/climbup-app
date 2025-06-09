@@ -1,6 +1,6 @@
 // climbup-app/src/hooks/useTags.ts
 import useSWR from "swr";
-import { useAuth, AuthContextType } from "../context/AuthContext";
+import { useAuth } from "../stores/authStore";
 import { swrFetcher } from "../lib/swrFetchers";
 
 // Bu DTO, projenin types/interfaces gibi global bir dosyasına taşınabilir.
@@ -16,13 +16,12 @@ export interface TagDto {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export function useTags() {
-  const authContext = useAuth();
-  const swrKey =
-    authContext.user && API_BASE_URL ? `${API_BASE_URL}/api/Tag` : null;
+  const { user } = useAuth();
+  const swrKey = user && API_BASE_URL ? `${API_BASE_URL}/api/Tag` : null;
 
   const { data, error, isLoading, mutate } = useSWR<TagDto[]>(
     swrKey,
-    (url: string) => swrFetcher(url, authContext as AuthContextType),
+    swrFetcher,
     {
       revalidateOnFocus: true,
       revalidateOnReconnect: true,

@@ -1,4 +1,4 @@
-import { User } from "../context/AuthContext";
+import { User } from "../stores/authStore";
 import { API_CONFIG, API_ENDPOINTS } from "@/config/api";
 
 interface AuthActions {

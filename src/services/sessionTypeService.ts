@@ -1,5 +1,5 @@
 import { fetchWithAuth } from "../lib/authFetch";
-import { AuthContextType } from "../context/AuthContext";
+import { AuthContextType } from "../stores/authStore";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 

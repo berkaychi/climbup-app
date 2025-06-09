@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useAuth, AuthContextType } from "../context/AuthContext";
+import { useAuth } from "../stores/authStore";
 import { swrFetcher } from "../lib/swrFetchers";
 import { UserProfileResponseDto } from "../types/users";
 
@@ -12,7 +12,7 @@ export function useUserProfile() {
 
   const { data, error, isLoading, mutate } = useSWR<UserProfileResponseDto>(
     swrKey,
-    (url: string) => swrFetcher(url, authContext as AuthContextType),
+    swrFetcher,
     {
       revalidateOnFocus: true,
       revalidateOnReconnect: true,

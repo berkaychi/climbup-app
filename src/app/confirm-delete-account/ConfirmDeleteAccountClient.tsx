@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect, FormEvent } from "react";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/stores/authStore";
 
 const ConfirmDeleteClient = () => {
   const searchParams = useSearchParams();

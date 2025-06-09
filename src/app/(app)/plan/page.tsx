@@ -7,6 +7,8 @@ import { usePlanCalendar } from "@/hooks/usePlanCalendar";
 import { format, startOfWeek } from "date-fns";
 import { tr } from "date-fns/locale";
 import { CreatePlanRequest } from "@/types/plan";
+import { useModal } from "@/hooks/useModal";
+import Modal from "@/components/Modal";
 
 // Components
 import AddPlanModal from "@/components/plan/AddPlanModal";
@@ -19,6 +21,9 @@ export default function PlanPage() {
   const [activeTab, setActiveTab] = useState("daily");
   const [showAddPlanModal, setShowAddPlanModal] = useState(false);
   const [showCompleted, setShowCompleted] = useState(true);
+
+  // Modal hook for alerts
+  const { modal, showAlert, handleConfirm, handleCancel } = useModal();
 
   // Use custom calendar hook
   const { selectedDate, selectedDay, setSelectedDay, navigateMonth } =
@@ -166,11 +171,16 @@ export default function PlanPage() {
           onToggleCompleted={() => setShowCompleted(!showCompleted)}
           onShowAddModal={() => setShowAddPlanModal(true)}
           onMarkComplete={(planId: number, isCompleted: boolean) =>
-            markComplete(planId.toString(), isCompleted)
+            markComplete(planId.toString(), isCompleted, showAlert)
           }
-          onDeletePlan={(planId: number) => deletePlan(planId.toString())}
+          onDeletePlan={(planId: number) =>
+            deletePlan(planId.toString(), showAlert)
+          }
         />
       </div>
+
+      {/* Modal for alerts */}
+      <Modal modal={modal} onConfirm={handleConfirm} onCancel={handleCancel} />
     </div>
   );
 }

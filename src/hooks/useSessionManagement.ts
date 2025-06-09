@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth, User } from "../context/AuthContext";
+import { useAuth, User } from "../stores/authStore";
 
 interface AuthActions {
   getAccessToken: () => string | null;
@@ -36,13 +36,14 @@ export const useSessionManagement = (
   const [showOngoingSessionModal, setShowOngoingSessionModal] = useState(false);
   const [ongoingSessionData, setOngoingSessionData] =
     useState<FocusSessionResponseDto | null>(null);
+  const [ongoingSessionChecked, setOngoingSessionChecked] = useState(false);
 
   const authContext = useAuth();
 
   // Fetch ongoing session on load
   useEffect(() => {
     const fetchOngoingSession = async () => {
-      if (!authContext.user || !API_BASE_URL) return;
+      if (!authContext.user || !API_BASE_URL || ongoingSessionChecked) return;
 
       try {
         const response = await fetchWithAuth(
@@ -65,11 +66,13 @@ export const useSessionManagement = (
         }
       } catch (error) {
         console.error("Error fetching ongoing session:", error);
+      } finally {
+        setOngoingSessionChecked(true);
       }
     };
 
     fetchOngoingSession();
-  }, [authContext, API_BASE_URL]);
+  }, [authContext.user?.id, API_BASE_URL, ongoingSessionChecked]); // Only check once per user
 
   const createSession = async (): Promise<FocusSessionResponseDto | null> => {
     if (!authContext || !API_BASE_URL) {
@@ -214,6 +217,15 @@ export const useSessionManagement = (
 
   const resetSession = () => {
     setActiveFocusSession(null);
+    setOngoingSessionChecked(false); // Allow checking for ongoing sessions again
+  };
+
+  const continueOngoingSession = () => {
+    if (ongoingSessionData) {
+      setActiveFocusSession(ongoingSessionData);
+      setOngoingSessionData(null);
+      setShowOngoingSessionModal(false);
+    }
   };
 
   return {
@@ -228,6 +240,7 @@ export const useSessionManagement = (
     completeSession,
     transitionState,
     resetSession,
+    continueOngoingSession,
     setActiveFocusSession,
     setShowOngoingSessionModal,
     setOngoingSessionData,

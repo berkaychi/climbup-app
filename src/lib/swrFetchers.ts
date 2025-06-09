@@ -1,8 +1,9 @@
 // climbup-app/src/lib/swrFetchers.ts
 import { fetchWithAuth } from "./authFetch";
-import { AuthContextType } from "../context/AuthContext";
+import { useAuthStore } from "../stores/authStore";
 
-export const swrFetcher = async (url: string, authHelpers: AuthContextType) => {
+export const swrFetcher = async (url: string) => {
+  const authHelpers = useAuthStore.getState();
   const response = await fetchWithAuth(url, {}, authHelpers);
 
   if (!response.ok) {

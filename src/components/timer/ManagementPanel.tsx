@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../stores/authStore";
 import { TagDto } from "../../hooks/useTags";
 import { SessionTypeResponseDto } from "../../hooks/useSessionTypes";
 import {

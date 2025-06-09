@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/stores/authStore";
 import { TaskService } from "@/lib/taskService";
 import { useMemo } from "react";
 
@@ -7,7 +7,8 @@ export function useTasks() {
   const authHelpers = useAuth();
   const taskService = useMemo(
     () => new TaskService(authHelpers),
-    [authHelpers]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id] // Only depend on user ID to prevent unnecessary re-renders
   );
 
   const cacheKey = authHelpers.user ? "/tasks/my-current" : null;

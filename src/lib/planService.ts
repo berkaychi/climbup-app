@@ -1,5 +1,5 @@
 import { fetchWithAuth } from "./authFetch";
-import { AuthContextType } from "../context/AuthContext";
+import { AuthContextType } from "../stores/authStore";
 import { API_CONFIG, API_ENDPOINTS } from "@/config/api";
 import {
   Plan,
@@ -115,7 +115,7 @@ export class PlanService {
 
   async getPlanById(id: string): Promise<Plan> {
     const response = await fetchWithAuth(
-      `${API_BASE}/ToDo/${id}`,
+      `${API_BASE}${API_ENDPOINTS.PLANS.BY_ID(id)}`,
       {},
       this.authHelpers
     );
@@ -178,7 +178,7 @@ export class PlanService {
     };
 
     const response = await fetchWithAuth(
-      `${API_BASE}/ToDo`,
+      `${API_BASE}${API_ENDPOINTS.PLANS.BASE}`,
       {
         method: "POST",
         headers: {
