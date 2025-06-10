@@ -1,6 +1,6 @@
 "use client";
 
-import { useBadges } from "../../hooks/useBadges";
+import { useUserBadges, useUserBadgeProgress } from "../../hooks/useBadges";
 import { BadgeService } from "../../lib/badgeService";
 
 interface BadgePanelProps {
@@ -12,14 +12,11 @@ export default function BadgePanel({
   isExpanded,
   onToggleExpanded,
 }: BadgePanelProps) {
-  const {
-    userBadges,
-    badgeProgress,
-    isLoadingUserBadges,
-    isLoadingBadgeProgress,
-    userBadgesError,
-    badgeProgressError,
-  } = useBadges();
+  // Always call hooks but conditionally use their data
+  const { userBadges, isLoadingUserBadges, userBadgesError } = useUserBadges();
+
+  const { badgeProgress, isLoadingBadgeProgress, badgeProgressError } =
+    useUserBadgeProgress();
 
   const badgeService = new BadgeService();
 

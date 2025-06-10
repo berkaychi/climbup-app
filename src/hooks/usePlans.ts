@@ -36,7 +36,7 @@ export function usePlans(filters?: PlanFilters) {
     authHelpers.user ? createKey("/plans", filters) : null,
     () => planService.getPlans(filters),
     {
-      revalidateOnFocus: true, // ✅ Enable sync when returning to tab
+      revalidateOnFocus: true, // ✅ Critical for mobile-web sync
       revalidateOnReconnect: true, // ✅ Enable sync when reconnecting
       dedupingInterval: 60000, // 1 minute
       refreshInterval: 0, // Keep disabled for performance
@@ -197,8 +197,10 @@ export function useDailyPlans(date: string) {
     authHelpers.user ? `/plans/daily/${date}` : null,
     () => planService.getDailyPlans(date),
     {
-      revalidateOnFocus: true,
-      refreshInterval: 60000, // Refresh every minute
+      revalidateOnFocus: true, // ✅ Critical for mobile-web sync
+      revalidateOnReconnect: true,
+      dedupingInterval: 300000, // Cache for 5 minutes
+      refreshInterval: 0, // Remove automatic refresh - only manual or on data change
     }
   );
 
@@ -223,7 +225,7 @@ export function useWeeklyProgress(weekStart: string) {
     authHelpers.user ? `/plans/weekly-progress/${weekStart}` : null,
     () => planService.getWeeklyProgress(weekStart),
     {
-      revalidateOnFocus: true, // ✅ Enable sync when returning to tab
+      revalidateOnFocus: false, // Don't refresh on tab focus to reduce API calls
       revalidateOnReconnect: true, // ✅ Enable sync when reconnecting
       dedupingInterval: 300000, // 5 minutes
     }
@@ -250,7 +252,7 @@ export function usePlanTemplates() {
     authHelpers.user ? "/plan-templates" : null,
     () => planService.getPlanTemplates(),
     {
-      revalidateOnFocus: true, // ✅ Enable sync when returning to tab
+      revalidateOnFocus: false, // Don't refresh on tab focus to reduce API calls
       revalidateOnReconnect: true, // ✅ Enable sync when reconnecting
       dedupingInterval: 600000, // 10 minutes
     }

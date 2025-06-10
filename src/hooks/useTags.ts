@@ -23,8 +23,10 @@ export function useTags() {
     swrKey,
     swrFetcher,
     {
-      revalidateOnFocus: true,
+      revalidateOnFocus: false, // Don't refresh on tab focus to reduce API calls
       revalidateOnReconnect: true,
+      dedupingInterval: 300000, // Cache for 5 minutes - tags don't change often
+      refreshInterval: 0, // No automatic refresh
     }
   );
 

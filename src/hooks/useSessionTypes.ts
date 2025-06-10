@@ -22,7 +22,13 @@ const useSessionTypes = () => {
 
   const { data, error, isLoading, mutate } = useSWR<SessionTypeResponseDto[]>(
     swrKey,
-    swrFetcher
+    swrFetcher,
+    {
+      revalidateOnFocus: false, // Don't refresh on tab focus
+      revalidateOnReconnect: true,
+      dedupingInterval: 300000, // Cache for 5 minutes - session types don't change often
+      refreshInterval: 0, // No automatic refresh
+    }
   );
 
   const sessionTypes = data?.filter((st) => st.isActive);

@@ -25,7 +25,7 @@ export function useLeaderboard(filters?: LeaderboardFilters) {
     {
       revalidateOnFocus: false,
       dedupingInterval: 300000, // 5 minutes
-      refreshInterval: 300000, // Refresh every 5 minutes
+      refreshInterval: 0, // Remove automatic refresh - only manual refresh
       shouldRetryOnError: (error) => {
         // Auth hatalarında retry yapma
         if (

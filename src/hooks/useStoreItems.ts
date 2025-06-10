@@ -14,8 +14,10 @@ export function useStoreItems() {
     swrKey,
     swrFetcher,
     {
-      revalidateOnFocus: true,
+      revalidateOnFocus: false, // Don't refresh on tab focus to reduce API calls
       revalidateOnReconnect: true,
+      dedupingInterval: 600000, // Cache for 10 minutes - store items don't change often
+      refreshInterval: 0, // No automatic refresh
     }
   );
 

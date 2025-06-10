@@ -40,6 +40,7 @@ export function useBadgeDefinitions() {
   >(swrKey, swrFetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
+    dedupingInterval: 300000, // Cache for 5 minutes - definitions don't change often
   });
 
   // Transform iconURLs to Cloudinary URLs
@@ -68,8 +69,9 @@ export function useUserBadges() {
     swrKey,
     swrFetcher,
     {
-      revalidateOnFocus: true,
+      revalidateOnFocus: true, // ✅ Critical for mobile-web sync - badges earned on mobile
       revalidateOnReconnect: true,
+      dedupingInterval: 60000, // Cache for 1 minute to prevent duplicate requests
     }
   );
 
@@ -99,9 +101,10 @@ export function useUserBadgeProgress() {
   const { data, error, isLoading, mutate } = useSWR<
     BadgeDefinitionResponseDto[]
   >(swrKey, swrFetcher, {
-    revalidateOnFocus: true,
+    revalidateOnFocus: true, // ✅ Critical for mobile-web sync
     revalidateOnReconnect: true,
-    refreshInterval: 30000, // Refresh every 30 seconds for real-time progress
+    refreshInterval: 300000, // Refresh every 5 minutes instead of 30 seconds
+    dedupingInterval: 60000, // Cache for 1 minute to prevent duplicate requests
   });
 
   // Transform iconURLs to Cloudinary URLs
@@ -158,10 +161,17 @@ export function useBadges() {
   const userBadges = useUserBadges();
   const userBadgeProgress = useUserBadgeProgress();
 
+  // Expose mutate functions for manual refresh when needed
+  const refreshBadges = () => {
+    userBadges.mutateUserBadges();
+    userBadgeProgress.mutateBadgeProgress();
+  };
+
   return {
     ...badgeDefinitions,
     ...userBadges,
     ...userBadgeProgress,
+    refreshBadges, // Manual refresh function
     isLoading:
       badgeDefinitions.isLoadingBadgeDefinitions ||
       userBadges.isLoadingUserBadges ||

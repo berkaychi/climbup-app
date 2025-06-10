@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-// import { useRouter } from "next/navigation"; // Artık kullanılmıyor
 import { useAuth } from "@/stores/authStore";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -47,6 +46,12 @@ const LoginPage = () => {
           roles: data.roles || [],
         });
         console.log("authLogin called"); // Debug
+
+        // Token'ların kaydedilmesi için kısa bir bekleme süresi
+        setTimeout(() => {
+          // Sayfa yenileme - middleware otomatik yönlendirme yapacak
+          window.location.reload();
+        }, 100);
       } else {
         setError(
           data.message || "Giriş başarısız. Lütfen bilgilerinizi kontrol edin."

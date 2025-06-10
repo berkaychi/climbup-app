@@ -45,7 +45,7 @@ const TimerPage = () => {
     "session" | "uiBreak"
   >("session");
   const [isTaskPanelExpanded, setIsTaskPanelExpanded] = useState(false); // Start with compact view
-  const [isBadgePanelExpanded, setIsBadgePanelExpanded] = useState(true);
+  const [isBadgePanelExpanded, setIsBadgePanelExpanded] = useState(false); // Start collapsed to reduce API calls
   const [isMobileTasksExpanded, setIsMobileTasksExpanded] = useState(true); // Start expanded on mobile
   const [isManagementPanelOpen, setIsManagementPanelOpen] = useState(false);
   const [managementInitialTab, setManagementInitialTab] = useState<

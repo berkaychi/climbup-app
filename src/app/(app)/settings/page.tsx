@@ -29,7 +29,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
@@ -193,7 +193,7 @@ export default function SettingsPage() {
             <div
               className={`transition-all duration-300 ease-in-out ${
                 activeSection === "security"
-                  ? "max-h-screen opacity-100"
+                  ? "max-h-none opacity-100"
                   : "max-h-0 opacity-0 overflow-hidden"
               }`}
             >
@@ -261,7 +261,7 @@ export default function SettingsPage() {
             <div
               className={`transition-all duration-300 ease-in-out ${
                 activeSection === "account"
-                  ? "max-h-screen opacity-100"
+                  ? "max-h-none opacity-100"
                   : "max-h-0 opacity-0 overflow-hidden"
               }`}
             >

@@ -14,8 +14,10 @@ export function useUserProfile() {
     swrKey,
     swrFetcher,
     {
-      revalidateOnFocus: true,
+      revalidateOnFocus: true, // ✅ Profile changes from mobile need sync
       revalidateOnReconnect: true,
+      dedupingInterval: 300000, // Cache for 5 minutes
+      refreshInterval: 600000, // Check every 10 minutes for profile changes
     }
   );
 

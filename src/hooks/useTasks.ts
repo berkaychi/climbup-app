@@ -17,9 +17,9 @@ export function useTasks() {
     cacheKey,
     () => taskService.getCurrentTasks(),
     {
-      revalidateOnFocus: true,
+      revalidateOnFocus: true, // ✅ Critical for mobile-web sync - tasks updated on mobile
       dedupingInterval: 60000, // 1 minute
-      refreshInterval: 300000, // Refresh every 5 minutes
+      refreshInterval: 0, // Remove automatic refresh - only manual refresh
       // 401 hatalarında retry yapma
       shouldRetryOnError: (error) => {
         // Token yenileme hataları ve 401 durumunda retry yapma

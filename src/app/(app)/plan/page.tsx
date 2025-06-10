@@ -23,7 +23,8 @@ export default function PlanPage() {
   const [showCompleted, setShowCompleted] = useState(true);
 
   // Modal hook for alerts
-  const { modal, showAlert, handleConfirm, handleCancel } = useModal();
+  const { modal, showAlert, showConfirm, handleConfirm, handleCancel } =
+    useModal();
 
   // Use custom calendar hook
   const { selectedDate, selectedDay, setSelectedDay, navigateMonth } =
@@ -81,6 +82,28 @@ export default function PlanPage() {
       console.error("Plan oluşturulurken hata:", error);
       throw error;
     }
+  };
+
+  // Handle plan deletion with confirmation
+  const handleDeletePlan = async (planId: number) => {
+    const plan = plans.find((p) => p.id === planId.toString());
+    if (!plan) return;
+
+    showConfirm(
+      `"${plan.title}" planını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`,
+      async () => {
+        try {
+          await deletePlan(planId.toString(), showAlert);
+          showAlert("Plan başarıyla silindi.", "success");
+        } catch (error) {
+          console.error("Plan silinirken hata:", error);
+          // Error is already handled in deletePlan function via showAlert
+        }
+      },
+      "Planı Sil",
+      "Evet, Sil",
+      "İptal"
+    );
   };
 
   return (
@@ -173,9 +196,7 @@ export default function PlanPage() {
           onMarkComplete={(planId: number, isCompleted: boolean) =>
             markComplete(planId.toString(), isCompleted, showAlert)
           }
-          onDeletePlan={(planId: number) =>
-            deletePlan(planId.toString(), showAlert)
-          }
+          onDeletePlan={(planId: number) => handleDeletePlan(planId)}
         />
       </div>
 
