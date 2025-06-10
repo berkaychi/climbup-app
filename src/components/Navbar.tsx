@@ -94,7 +94,7 @@ const Navbar = () => {
                   pathname === "/store" ? { backgroundColor: "#F96943" } : {}
                 }
               >
-                Store
+                Mağaza
               </Link>
               <div className="relative group">
                 <button className="flex items-center text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors px-4 py-2 rounded-full hover:bg-orange-50 dark:hover:bg-orange-900/30">
