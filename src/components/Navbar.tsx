@@ -296,7 +296,7 @@ const Navbar = () => {
                     : "text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400"
                 }`}
               >
-                Store
+                Mağaza
               </Link>
               <Link
                 href="/leaderboard"

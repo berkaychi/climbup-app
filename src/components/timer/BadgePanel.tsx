@@ -38,7 +38,7 @@ export default function BadgePanel({
 
             {/* BADGES Text */}
             <span className="text-sm font-bold text-gray-800 dark:text-gray-100 tracking-wider">
-              BADGES
+              ROZETLER
             </span>
 
             {/* Expand Arrow */}
