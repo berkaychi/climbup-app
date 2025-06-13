@@ -30,21 +30,24 @@ export default function PlanPage() {
   const { selectedDate, selectedDay, setSelectedDay, navigateMonth } =
     usePlanCalendar();
 
-  // Format dates for API calls
-  const monthStartString = format(
-    new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1),
-    "yyyy-MM-dd"
-  );
-  const monthEndString = format(
-    new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0),
-    "yyyy-MM-dd"
-  );
+  // Calculate 3-month range: previous month, current month, next month
+  const currentMonth = selectedDate.getMonth();
+  const currentYear = selectedDate.getFullYear();
+
+  // Start from first day of previous month
+  const startMonth = new Date(currentYear, currentMonth - 1, 1);
+  // End at last day of next month
+  const endMonth = new Date(currentYear, currentMonth + 2, 0);
+
+  const monthStartString = format(startMonth, "yyyy-MM-dd");
+  const monthEndString = format(endMonth, "yyyy-MM-dd");
+
   const weekStartString = format(
     startOfWeek(selectedDate, { weekStartsOn: 1 }),
     "yyyy-MM-dd"
   );
 
-  // API Hooks
+  // API Hooks - now loading 3 months of data
   const { plans, createPlan, deletePlan, markComplete } = usePlans({
     startDate: monthStartString,
     endDate: monthEndString,

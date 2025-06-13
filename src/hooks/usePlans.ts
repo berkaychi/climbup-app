@@ -13,7 +13,7 @@ import {
   CreatePlanTemplateRequest,
   PlanFilters,
 } from "@/types/plan";
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState } from "react";
 
 // SWR key generator
 const createKey = (endpoint: string, filters?: PlanFilters | string) => {
@@ -338,6 +338,201 @@ export function usePlan(id: string | null) {
     plan: data,
     isLoading,
     error,
+    refetch: mutate,
+  };
+}
+
+// Lazy Loading Plans Hook - for future use when navigating beyond 3-month window
+export function useLazyPlans(initialDateRange: {
+  startDate: string;
+  endDate: string;
+}) {
+  const authHelpers = useAuth();
+  const planService = useMemo(
+    () => new PlanService(authHelpers),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [authHelpers.user?.id]
+  );
+
+  const [dateRange, setDateRange] = useState(initialDateRange);
+  const [loadedRanges, setLoadedRanges] = useState<
+    {
+      startDate: string;
+      endDate: string;
+    }[]
+  >([initialDateRange]);
+
+  const { data, error, isLoading, mutate } = useSWR(
+    authHelpers.user ? createKey("/plans/lazy", dateRange) : null,
+    () => planService.getPlansInRange(dateRange.startDate, dateRange.endDate),
+    {
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+      dedupingInterval: 60000,
+    }
+  );
+
+  const loadMoreData = useCallback(
+    async (newStartDate: string, newEndDate: string) => {
+      // Check if this range is already loaded
+      const isAlreadyLoaded = loadedRanges.some(
+        (range) =>
+          newStartDate >= range.startDate && newEndDate <= range.endDate
+      );
+
+      if (isAlreadyLoaded) {
+        return; // No need to fetch
+      }
+
+      // Extend the date range
+      const extendedRange = {
+        startDate:
+          newStartDate < dateRange.startDate
+            ? newStartDate
+            : dateRange.startDate,
+        endDate:
+          newEndDate > dateRange.endDate ? newEndDate : dateRange.endDate,
+      };
+
+      setDateRange(extendedRange);
+      setLoadedRanges((prev) => [...prev, extendedRange]);
+
+      // Trigger re-fetch
+      await mutate();
+    },
+    [dateRange, loadedRanges, mutate]
+  );
+
+  const createPlan = useCallback(
+    async (planData: CreatePlanRequest) => {
+      try {
+        const newPlan = await planService.createPlan(planData);
+        await mutate((currentData: Plan[] | undefined) => {
+          if (!currentData) return [newPlan];
+          return [newPlan, ...currentData];
+        }, false);
+        await mutate();
+        return newPlan;
+      } catch (error) {
+        console.error("Plan creation failed:", error);
+        throw error;
+      }
+    },
+    [planService, mutate]
+  );
+
+  const updatePlan = useCallback(
+    async (id: string, planData: UpdatePlanRequest) => {
+      try {
+        const updatedPlan = await planService.updatePlan(id, planData);
+        await mutate((currentData: Plan[] | undefined) => {
+          if (!currentData) return undefined;
+          return currentData.map((plan) =>
+            plan.id === id ? updatedPlan : plan
+          );
+        }, false);
+        return updatedPlan;
+      } catch (error) {
+        console.error("Plan update failed:", error);
+        throw error;
+      }
+    },
+    [planService, mutate]
+  );
+
+  const deletePlan = useCallback(
+    async (
+      id: string,
+      showAlert?: (message: string, type: "error") => void
+    ) => {
+      try {
+        await planService.deletePlan(id);
+        await mutate((currentData: Plan[] | undefined) => {
+          if (!currentData) return undefined;
+          return currentData.filter((plan) => plan.id !== id);
+        }, false);
+      } catch (error) {
+        console.error("Plan silme hatası:", error);
+        if (showAlert) {
+          if (error instanceof Error) {
+            if (error.message.includes("Tamamlanan planlar silinemez")) {
+              showAlert("Tamamlanan planlar silinemez.", "error");
+            } else if (
+              error.message.includes("Süresi geçmiş planlar silinemez")
+            ) {
+              showAlert("Süresi geçmiş planlar silinemez.", "error");
+            } else {
+              showAlert(
+                "Plan silinirken bir hata oluştu. Lütfen tekrar deneyin.",
+                "error"
+              );
+            }
+          } else {
+            showAlert(
+              "Plan silinirken bir hata oluştu. Lütfen tekrar deneyin.",
+              "error"
+            );
+          }
+        }
+        throw error;
+      }
+    },
+    [planService, mutate]
+  );
+
+  const markComplete = useCallback(
+    async (
+      id: string,
+      isCompleted: boolean,
+      showAlert?: (message: string, type: "error") => void
+    ) => {
+      try {
+        const completedPlan = await planService.togglePlanStatus(
+          id,
+          isCompleted
+        );
+        mutate((currentData: Plan[] | undefined) => {
+          if (!currentData) return undefined;
+          return currentData.map((plan) =>
+            plan.id === id ? completedPlan : plan
+          );
+        }, false);
+        return completedPlan;
+      } catch (error) {
+        console.error("Plan status değiştirme hatası:", error);
+        if (showAlert) {
+          if (
+            error instanceof Error &&
+            error.message.includes("tekrar açılamaz")
+          ) {
+            showAlert(
+              "Tamamlanan planlar tekrar açılamaz. Yeni bir plan oluşturabilirsiniz.",
+              "error"
+            );
+          } else {
+            showAlert(
+              "Plan durumu değiştirilirken bir hata oluştu. Lütfen tekrar deneyin.",
+              "error"
+            );
+          }
+        }
+        throw error;
+      }
+    },
+    [planService, mutate]
+  );
+
+  return {
+    plans: data || [],
+    isLoading,
+    error,
+    dateRange,
+    loadedRanges,
+    loadMoreData,
+    createPlan,
+    updatePlan,
+    deletePlan,
+    markComplete,
     refetch: mutate,
   };
 }

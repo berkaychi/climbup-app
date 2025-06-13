@@ -127,10 +127,10 @@ export default function SessionTypeSelector({
                       sessionType.workDuration / 60
                     )}dk çalışma • ${Math.floor(
                       sessionType.breakDuration / 60
-                    )}dk mola${
-                      sessionType.numberOfCycles
-                        ? ` • ${sessionType.numberOfCycles} döngü`
-                        : ""
+                    )}dk mola • ${
+                      sessionType.numberOfCycles === null
+                        ? "Sonsuz döngü"
+                        : `${sessionType.numberOfCycles} döngü`
                     }`}
                   >
                     <span className="flex items-center gap-2">
@@ -255,10 +255,10 @@ export default function SessionTypeSelector({
                     sessionType.workDuration / 60
                   )}dk çalışma • ${Math.floor(
                     sessionType.breakDuration / 60
-                  )}dk mola${
-                    sessionType.numberOfCycles
-                      ? ` • ${sessionType.numberOfCycles} döngü`
-                      : ""
+                  )}dk mola • ${
+                    sessionType.numberOfCycles === null
+                      ? "Sonsuz döngü"
+                      : `${sessionType.numberOfCycles} döngü`
                   }`}
                 >
                   <span className="flex items-center gap-2">

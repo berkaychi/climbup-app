@@ -8,7 +8,7 @@ export interface CreateSessionTypeData {
   description?: string;
   workDuration: number; // in seconds
   breakDuration?: number; // in seconds
-  numberOfCycles?: number;
+  numberOfCycles?: number | null;
 }
 
 export interface UpdateSessionTypeData {
@@ -16,7 +16,7 @@ export interface UpdateSessionTypeData {
   description?: string;
   workDuration?: number; // in seconds
   breakDuration?: number; // in seconds
-  numberOfCycles?: number;
+  numberOfCycles?: number | null;
   isActive?: boolean;
 }
 

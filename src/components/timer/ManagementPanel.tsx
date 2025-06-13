@@ -118,6 +118,7 @@ const ManagementPanel = ({
     useState(5);
   const [newSessionTypeNumberOfCycles, setNewSessionTypeNumberOfCycles] =
     useState(4);
+  const [isInfiniteCycles, setIsInfiniteCycles] = useState(false);
 
   const tagService = new TagService(authContext);
   const sessionTypeService = new SessionTypeService(authContext);
@@ -136,6 +137,7 @@ const ManagementPanel = ({
     setNewSessionTypeWorkDuration(25);
     setNewSessionTypeBreakDuration(5);
     setNewSessionTypeNumberOfCycles(4);
+    setIsInfiniteCycles(false);
     setIsAddingSessionType(false);
     setEditingSessionTypeId(null);
   };
@@ -209,7 +211,7 @@ const ManagementPanel = ({
         description: newSessionTypeDescription.trim() || undefined,
         workDuration: newSessionTypeWorkDuration * 60, // Convert to seconds
         breakDuration: newSessionTypeBreakDuration * 60, // Convert to seconds
-        numberOfCycles: newSessionTypeNumberOfCycles,
+        numberOfCycles: isInfiniteCycles ? null : newSessionTypeNumberOfCycles,
       };
 
       await sessionTypeService.createSessionType(sessionTypeData);
@@ -232,7 +234,7 @@ const ManagementPanel = ({
         description: newSessionTypeDescription.trim() || undefined,
         workDuration: newSessionTypeWorkDuration * 60, // Convert to seconds
         breakDuration: newSessionTypeBreakDuration * 60, // Convert to seconds
-        numberOfCycles: newSessionTypeNumberOfCycles,
+        numberOfCycles: isInfiniteCycles ? null : newSessionTypeNumberOfCycles,
       };
 
       await sessionTypeService.updateSessionType(id, updateData);
@@ -270,6 +272,7 @@ const ManagementPanel = ({
     setNewSessionTypeWorkDuration(Math.floor(sessionType.workDuration / 60));
     setNewSessionTypeBreakDuration(Math.floor(sessionType.breakDuration / 60));
     setNewSessionTypeNumberOfCycles(sessionType.numberOfCycles || 4);
+    setIsInfiniteCycles(sessionType.numberOfCycles === null);
     setEditingSessionTypeId(sessionType.id);
     setIsAddingSessionType(false);
   };
@@ -710,19 +713,76 @@ const ManagementPanel = ({
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Döngü Sayısı
                         </label>
-                        <input
-                          type="number"
-                          value={newSessionTypeNumberOfCycles}
-                          onChange={(e) =>
-                            setNewSessionTypeNumberOfCycles(
-                              parseInt(e.target.value) || 4
-                            )
-                          }
-                          placeholder="4"
-                          min="1"
-                          max="20"
-                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                        />
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="radio"
+                              id="finite-cycles"
+                              name="cycle-type"
+                              checked={!isInfiniteCycles}
+                              onChange={() => setIsInfiniteCycles(false)}
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            />
+                            <label
+                              htmlFor="finite-cycles"
+                              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                            >
+                              Belirli sayıda döngü
+                            </label>
+                          </div>
+                          {!isInfiniteCycles && (
+                            <input
+                              type="number"
+                              value={newSessionTypeNumberOfCycles}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === "") {
+                                  // Don't set a default value immediately, let user type
+                                  return;
+                                }
+                                const numValue = parseInt(value);
+                                if (
+                                  !isNaN(numValue) &&
+                                  numValue >= 1 &&
+                                  numValue <= 100
+                                ) {
+                                  setNewSessionTypeNumberOfCycles(numValue);
+                                }
+                              }}
+                              onBlur={(e) => {
+                                // Set default value only on blur if empty
+                                if (e.target.value === "") {
+                                  setNewSessionTypeNumberOfCycles(4);
+                                }
+                              }}
+                              placeholder="4"
+                              min="1"
+                              max="100"
+                              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            />
+                          )}
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="radio"
+                              id="infinite-cycles"
+                              name="cycle-type"
+                              checked={isInfiniteCycles}
+                              onChange={() => setIsInfiniteCycles(true)}
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            />
+                            <label
+                              htmlFor="infinite-cycles"
+                              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                            >
+                              Sonsuz döngü
+                            </label>
+                          </div>
+                          {isInfiniteCycles && (
+                            <div className="text-sm text-gray-500 dark:text-gray-400 italic pl-6">
+                              Oturum manuel olarak durdurulana kadar devam eder
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -735,11 +795,27 @@ const ManagementPanel = ({
                           <input
                             type="number"
                             value={newSessionTypeWorkDuration}
-                            onChange={(e) =>
-                              setNewSessionTypeWorkDuration(
-                                parseInt(e.target.value) || 25
-                              )
-                            }
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === "") {
+                                // Don't set a default value immediately, let user type
+                                return;
+                              }
+                              const numValue = parseInt(value);
+                              if (
+                                !isNaN(numValue) &&
+                                numValue >= 1 &&
+                                numValue <= 180
+                              ) {
+                                setNewSessionTypeWorkDuration(numValue);
+                              }
+                            }}
+                            onBlur={(e) => {
+                              // Set default value only on blur if empty
+                              if (e.target.value === "") {
+                                setNewSessionTypeWorkDuration(25);
+                              }
+                            }}
                             min="1"
                             max="180"
                             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -758,11 +834,27 @@ const ManagementPanel = ({
                           <input
                             type="number"
                             value={newSessionTypeBreakDuration}
-                            onChange={(e) =>
-                              setNewSessionTypeBreakDuration(
-                                parseInt(e.target.value) || 5
-                              )
-                            }
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === "") {
+                                // Don't set a default value immediately, let user type
+                                return;
+                              }
+                              const numValue = parseInt(value);
+                              if (
+                                !isNaN(numValue) &&
+                                numValue >= 0 &&
+                                numValue <= 60
+                              ) {
+                                setNewSessionTypeBreakDuration(numValue);
+                              }
+                            }}
+                            onBlur={(e) => {
+                              // Set default value only on blur if empty
+                              if (e.target.value === "") {
+                                setNewSessionTypeBreakDuration(5);
+                              }
+                            }}
                             min="0"
                             max="60"
                             className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -901,24 +993,24 @@ const ManagementPanel = ({
                                   {Math.floor(sessionType.breakDuration / 60)}dk
                                   mola
                                 </span>
-                                {sessionType.numberOfCycles && (
-                                  <span className="flex items-center gap-1">
-                                    <svg
-                                      className="w-4 h-4 text-purple-500"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                                      />
-                                    </svg>
-                                    {sessionType.numberOfCycles} döngü
-                                  </span>
-                                )}
+                                <span className="flex items-center gap-1">
+                                  <svg
+                                    className="w-4 h-4 text-purple-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                    />
+                                  </svg>
+                                  {sessionType.numberOfCycles === null
+                                    ? "Sonsuz döngü"
+                                    : `${sessionType.numberOfCycles} döngü`}
+                                </span>
                               </div>
                             </div>
                             {sessionType.description && (

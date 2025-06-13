@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/stores/authStore";
-import { useTheme } from "@/context/ThemeContext";
+
 import {
   useUserStatsSummary,
   useTagFocusStats,
@@ -20,7 +20,8 @@ const ProfilePage = () => {
   const { user, isLoading } = useAuth();
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isPhotoModalOpen, setPhotoModalOpen] = useState(false);
-  const { resolvedTheme } = useTheme();
+  const [showAllActivities, setShowAllActivities] = useState(false);
+
   const router = useRouter();
   const { userProfile, isLoadingUserProfile } = useUserProfile();
 
@@ -37,15 +38,20 @@ const ProfilePage = () => {
   const { plans } = usePlans({ startDate, endDate });
 
   // Recent activities from plans
-  const recentActivities = useMemo(() => {
+  const allCompletedActivities = useMemo(() => {
     return plans
       .filter((plan) => plan.isCompleted)
       .sort(
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
-      .slice(0, 4);
+      );
   }, [plans]);
+
+  const recentActivities = useMemo(() => {
+    return showAllActivities
+      ? allCompletedActivities
+      : allCompletedActivities.slice(0, 4);
+  }, [allCompletedActivities, showAllActivities]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -359,112 +365,304 @@ const ProfilePage = () => {
         <div className="lg:col-span-2 space-y-6">
           {/* Weekly Progress Chart */}
           <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-lg border border-white/20 dark:border-gray-700/30 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
-                Haftalık Çalışma Dağılımı
-              </h3>
-              <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-                <span>Bu hafta</span>
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center shadow-lg">
+                <svg
+                  className="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                  Haftalık Çalışma Dağılımı
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Son 7 günlük performansınız
+                </p>
               </div>
             </div>
-            <div className="flex items-end justify-between h-32 mb-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2">
-              {weeklyData.map((day, index) => {
-                const maxValue = Math.max(...weeklyData.map((d) => d.value), 1);
-                const height = Math.max((day.value / maxValue) * 100, 4);
 
-                return (
-                  <div
-                    key={index}
-                    className="flex flex-col items-center flex-1"
-                  >
+            {/* Chart Container */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50/80 to-gray-100/80 dark:from-gray-800/80 dark:to-gray-900/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 p-6">
+              {/* Grid Lines */}
+              <div className="absolute inset-x-6 top-6 bottom-16 pointer-events-none">
+                <div className="h-full flex flex-col justify-between">
+                  {[...Array(4)].map((_, i) => (
                     <div
-                      className="w-6 bg-gradient-to-t from-orange-500 to-orange-400 dark:from-orange-600 dark:to-orange-500 rounded-t transition-all duration-300 hover:from-orange-600 hover:to-orange-500 dark:hover:from-orange-500 dark:hover:to-orange-400 shadow-sm relative group"
-                      style={{ height: `${height}px` }}
-                    >
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        {day.value} dk
+                      key={i}
+                      className="w-full border-t border-gray-200/60 dark:border-gray-600/40 border-dashed"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Chart Bars */}
+              <div className="relative h-40 mb-4">
+                <div className="flex items-end justify-between h-full px-2">
+                  {weeklyData.map((day, index) => {
+                    const maxValue = Math.max(
+                      ...weeklyData.map((d) => d.value),
+                      1
+                    );
+                    const heightPercentage = (day.value / maxValue) * 100;
+                    const height = Math.max(heightPercentage, 4);
+                    const isToday = index === new Date().getDay();
+
+                    return (
+                      <div
+                        key={index}
+                        className="flex flex-col items-center flex-1 group"
+                      >
+                        {/* Bar */}
+                        <div className="relative mb-1">
+                          <div
+                            className={`w-8 sm:w-10 rounded-lg transition-all duration-500 ease-out transform group-hover:scale-110 group-hover:-translate-y-1 shadow-lg ${
+                              isToday
+                                ? "bg-gradient-to-t from-orange-600 via-orange-500 to-orange-400 ring-2 ring-orange-300 dark:ring-orange-600"
+                                : "bg-gradient-to-t from-orange-500/80 via-orange-400/80 to-orange-300/80 group-hover:from-orange-600 group-hover:via-orange-500 group-hover:to-orange-400"
+                            }`}
+                            style={{ height: `${height}px` }}
+                          />
+
+                          {/* Value Display */}
+                          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                            <div
+                              className={`px-2 py-1 rounded-lg text-xs font-semibold transition-all duration-300 ${
+                                day.value > 0
+                                  ? "opacity-0 group-hover:opacity-100 bg-gray-800 dark:bg-white text-white dark:text-gray-800 shadow-lg"
+                                  : "opacity-0"
+                              }`}
+                            >
+                              {day.value} dk
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Day Label */}
+                        <div className="text-center">
+                          <span
+                            className={`text-xs font-medium transition-colors duration-200 ${
+                              isToday
+                                ? "text-orange-600 dark:text-orange-400 font-bold"
+                                : "text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-200"
+                            }`}
+                          >
+                            {day.day}
+                          </span>
+                          {isToday && (
+                            <div className="w-1 h-1 bg-orange-500 rounded-full mx-auto mt-1" />
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 mt-2 font-medium">
-                      {day.day}
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Summary Stats */}
+              <div className="flex items-center justify-between pt-4 border-t border-gray-200/60 dark:border-gray-600/40">
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-orange-400 rounded-full shadow-sm" />
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Toplam:{" "}
+                      {weeklyData.reduce((acc, day) => acc + day.value, 0)} dk
                     </span>
                   </div>
-                );
-              })}
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-400 rounded-full shadow-sm" />
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Ortalama:{" "}
+                      {Math.round(
+                        weeklyData.reduce((acc, day) => acc + day.value, 0) / 7
+                      )}{" "}
+                      dk
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Recent Activities */}
           <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-lg border border-white/20 dark:border-gray-700/30 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
-                Son Aktiviteler
-              </h3>
-              <button className="text-orange-600 dark:text-orange-400 text-sm font-medium hover:underline">
-                Tümünü Gör
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                <svg
+                  className="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                  Son Aktiviteler
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {showAllActivities
+                    ? `${allCompletedActivities.length} tamamlanan seans`
+                    : "Son 4 çalışma seansınız"}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowAllActivities(!showAllActivities)}
+                className="px-3 py-1.5 text-sm font-medium text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-all duration-200"
+              >
+                {showAllActivities ? "Daha Az Göster" : "Tümünü Gör"}
               </button>
             </div>
-            <div className="space-y-4">
+
+            {/* Activities List */}
+            <div
+              className={`space-y-3 ${
+                showAllActivities ? "max-h-96 overflow-y-auto pr-2" : ""
+              }`}
+            >
               {recentActivities.length > 0 ? (
-                recentActivities.map((activity, index) => (
-                  <div key={activity.id} className="flex">
-                    <div className="flex flex-col items-center mr-4">
-                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        {format(new Date(activity.createdAt), "dd MMM", {
-                          locale: tr,
-                        })}
-                      </div>
-                      {index < recentActivities.length - 1 && (
-                        <div className="w-px h-full bg-gray-200 dark:bg-gray-600 my-1"></div>
-                      )}
-                    </div>
-                    <div className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border-l-4 border-orange-500 dark:border-orange-400 rounded-r-lg p-3 flex-1">
-                      <div className="flex justify-between items-start">
-                        <h4 className="font-medium text-gray-800 dark:text-gray-100">
-                          {activity.title}
-                        </h4>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {format(new Date(activity.createdAt), "HH:mm")}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                        {activity.description || "Açıklama yok"} •{" "}
-                        {activity.duration} dakika
-                      </p>
-                      <div className="flex items-center mt-2">
-                        {activity.tagName && (
-                          <div
-                            className="px-2 py-0.5 text-white rounded-full text-xs font-medium mr-2"
-                            style={{
-                              backgroundColor: activity.color || "#F97316",
-                            }}
-                          >
-                            {activity.tagName}
+                recentActivities.map((activity) => (
+                  <div
+                    key={activity.id}
+                    className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:shadow-md hover:scale-[1.01] hover:-translate-y-0.5"
+                  >
+                    {/* Background Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-50/50 to-gray-100/50 dark:from-gray-800/50 dark:to-gray-900/50 opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
+
+                    {/* Left Color Strip */}
+                    <div
+                      className="absolute left-0 top-0 bottom-0 w-1 transition-all duration-300 group-hover:w-1.5"
+                      style={{ backgroundColor: activity.color || "#F97316" }}
+                    />
+
+                    {/* Content */}
+                    <div className="relative p-4 pl-6 border border-gray-200/60 dark:border-gray-700/60 rounded-xl backdrop-blur-sm">
+                      <div className="flex items-start gap-4">
+                        {/* Date Column */}
+                        <div className="flex flex-col items-center justify-center min-w-[60px] bg-white/70 dark:bg-gray-800/70 rounded-lg p-2 border border-gray-200/50 dark:border-gray-700/50">
+                          <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                            {format(new Date(activity.createdAt), "MMM", {
+                              locale: tr,
+                            })}
                           </div>
-                        )}
-                        <div className="flex items-center text-green-600 dark:text-green-400 text-xs">
-                          <svg
-                            className="w-3 h-3 mr-1"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                          Tamamlandı
+                          <div className="text-lg font-bold text-gray-800 dark:text-gray-100 leading-none">
+                            {format(new Date(activity.createdAt), "dd")}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {format(new Date(activity.createdAt), "HH:mm")}
+                          </div>
+                        </div>
+
+                        {/* Activity Details */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="font-semibold text-gray-800 dark:text-gray-100 text-base truncate">
+                              {activity.title}
+                            </h4>
+                            <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 ml-2">
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              <span className="font-medium">
+                                {activity.duration} dk
+                              </span>
+                            </div>
+                          </div>
+
+                          {activity.description && (
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
+                              {activity.description}
+                            </p>
+                          )}
+
+                          {/* Tags and Status */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              {activity.tagName && (
+                                <span
+                                  className="px-3 py-1 text-white rounded-full text-xs font-medium shadow-sm"
+                                  style={{
+                                    backgroundColor:
+                                      activity.color || "#F97316",
+                                  }}
+                                >
+                                  {activity.tagName}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">
+                              <svg
+                                className="w-3 h-3"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                              Tamamlandı
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                  <p>Henüz tamamlanmış aktivite bulunmuyor.</p>
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg
+                      className="w-8 h-8 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Henüz aktivite yok
+                  </h4>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    İlk çalışma seansınızı tamamlayın ve burada görün
+                  </p>
                 </div>
               )}
             </div>
@@ -475,44 +673,162 @@ const ProfilePage = () => {
         <div className="space-y-6">
           {/* Favorite Tags */}
           <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-lg border border-white/20 dark:border-gray-700/30 p-6">
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4">
-              En Çok Kullanılan Etiketler
-            </h3>
-            <div className="space-y-4">
-              {tagStats.slice(0, 5).map((tag) => (
-                <div key={tag.tagId} className="flex items-stretch">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                <svg
+                  className="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                  En Çok Kullanılan Etiketler
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  En aktif olduğunuz kategoriler
+                </p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {tagStats.slice(0, 5).map((tag, index) => (
+                <div
+                  key={tag.tagId}
+                  className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1"
+                >
+                  {/* Gradient Background */}
                   <div
-                    className="w-2 h-full rounded-l-md"
-                    style={{ backgroundColor: tag.tagColor }}
-                  ></div>
-                  <div
-                    className="flex-1 flex justify-between items-center rounded-r-md p-3"
+                    className="absolute inset-0 opacity-10 group-hover:opacity-15 transition-opacity duration-300"
                     style={{
-                      backgroundColor: `${tag.tagColor}${
-                        resolvedTheme === "dark" ? "40" : "20"
-                      }`,
+                      background: `linear-gradient(135deg, ${tag.tagColor}40, ${tag.tagColor}20)`,
                     }}
-                  >
-                    <div>
-                      <span className="font-medium text-gray-800 dark:text-gray-100">
-                        {tag.tagName}
-                      </span>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        {formatDuration(tag.totalFocusDurationSeconds)} çalışma
+                  />
+
+                  {/* Left Border */}
+                  <div
+                    className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl transition-all duration-300 group-hover:w-1.5"
+                    style={{ backgroundColor: tag.tagColor }}
+                  />
+
+                  {/* Content */}
+                  <div className="relative p-4 pl-6 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          {/* Rank Badge */}
+                          <div
+                            className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-sm"
+                            style={{ backgroundColor: tag.tagColor }}
+                          >
+                            {index + 1}
+                          </div>
+                          <span className="font-semibold text-gray-800 dark:text-gray-100 text-lg">
+                            {tag.tagName}
+                          </span>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="flex items-center gap-4 text-sm">
+                          <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400">
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            <span>
+                              {formatDuration(tag.totalFocusDurationSeconds)}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400">
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            <span>{tag.totalCompletedSessions} seans</span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      className="text-sm font-medium"
-                      style={{ color: tag.tagColor }}
-                    >
-                      {tag.totalCompletedSessions} seans
+
+                      {/* Right Section - Progress Indicator */}
+                      <div className="flex flex-col items-end gap-2">
+                        <div
+                          className="text-lg font-bold tracking-tight"
+                          style={{ color: tag.tagColor }}
+                        >
+                          #{index + 1}
+                        </div>
+                        <div className="w-12 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-500 ease-out"
+                            style={{
+                              backgroundColor: tag.tagColor,
+                              width: `${Math.min(
+                                100,
+                                (tag.totalCompletedSessions /
+                                  Math.max(
+                                    ...tagStats
+                                      .slice(0, 5)
+                                      .map((t) => t.totalCompletedSessions)
+                                  )) *
+                                  100
+                              )}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               ))}
+
               {tagStats.length === 0 && (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                  <p>Henüz etiket kullanımı bulunmuyor.</p>
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg
+                      className="w-8 h-8 text-purple-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                      />
+                    </svg>
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Henüz etiket kullanımı yok
+                  </h4>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    Çalışma seanslarınızda etiketler kullanmaya başlayın
+                  </p>
                 </div>
               )}
             </div>
