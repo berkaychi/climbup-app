@@ -41,45 +41,39 @@ export class PlanService {
 
     const todos = await response.json();
 
-    // Transform ToDo items to Plan format and filter out invalid dates
-    let plans = todos
-      .map((todo: TodoApiResponse) => {
-        const startTime = todo.userIntendedStartTime || todo.forDate;
-        const startDate = new Date(startTime);
+    // Transform ToDo items to Plan format
+    let plans = todos.map((todo: TodoApiResponse) => {
+      // Handle invalid dates like "0001-01-01"
+      let startTime = todo.userIntendedStartTime || todo.forDate;
+      const startDate = new Date(startTime);
 
-        // Check if date is invalid, too old (before year 1900), or too far in future (> 2030)
-        const isInvalidDate =
-          isNaN(startDate.getTime()) ||
-          startDate.getFullYear() < 1900 ||
-          startDate.getFullYear() > 2030;
+      // If date is invalid or too old (before year 1900), use today's date
+      if (isNaN(startDate.getTime()) || startDate.getFullYear() < 1900) {
+        const today = new Date();
+        startTime = today.toISOString();
+      }
 
-        // Return null for invalid dates so we can filter them out
-        if (isInvalidDate) {
-          return null;
-        }
-
-        return {
-          id: todo.id.toString(),
-          userId: "current-user", // Will be filled by backend
-          title: todo.title,
-          description: todo.description || "",
-          startTime: startTime,
-          endTime: startTime, // Will calculate based on duration
-          duration: todo.targetWorkDuration
-            ? this.parseTimeSpanToMinutes(todo.targetWorkDuration)
-            : 60,
-          tagId: todo.tags?.[0]?.id?.toString(),
-          tagName: todo.tags?.[0]?.name,
-          color: todo.tags?.[0]?.color,
-          isCompleted: todo.status === "Completed",
-          isOverdue: todo.status === "Overdue",
-          isRecurring: false, // ToDo API doesn't support recurring
-          recurringPattern: undefined,
-          createdAt: todo.forDate,
-          updatedAt: todo.forDate,
-        };
-      })
-      .filter((plan: Plan | null) => plan !== null) as Plan[]; // Remove null entries
+      return {
+        id: todo.id.toString(),
+        userId: "current-user", // Will be filled by backend
+        title: todo.title,
+        description: todo.description || "",
+        startTime: startTime,
+        endTime: startTime, // Will calculate based on duration
+        duration: todo.targetWorkDuration
+          ? this.parseTimeSpanToMinutes(todo.targetWorkDuration)
+          : 60,
+        tagId: todo.tags?.[0]?.id?.toString(),
+        tagName: todo.tags?.[0]?.name,
+        color: todo.tags?.[0]?.color,
+        isCompleted: todo.status === "Completed",
+        isOverdue: todo.status === "Overdue",
+        isRecurring: false, // ToDo API doesn't support recurring
+        recurringPattern: undefined,
+        createdAt: todo.forDate,
+        updatedAt: todo.forDate,
+      };
+    });
 
     // Client-side filtering for date range
     if (filters?.startDate || filters?.endDate) {
@@ -132,18 +126,14 @@ export class PlanService {
 
     const todo = await response.json();
 
-    const startTime = todo.userIntendedStartTime || todo.forDate;
+    // Handle invalid dates like "0001-01-01"
+    let startTime = todo.userIntendedStartTime || todo.forDate;
     const startDate = new Date(startTime);
 
-    // Check if date is invalid, too old (before year 1900), or too far in future (> 2030)
-    const isInvalidDate =
-      isNaN(startDate.getTime()) ||
-      startDate.getFullYear() < 1900 ||
-      startDate.getFullYear() > 2030;
-
-    // Throw error for invalid dates instead of returning them
-    if (isInvalidDate) {
-      throw new Error(`Plan has invalid date: ${startTime}`);
+    // If date is invalid or too old (before year 1900), use today's date
+    if (isNaN(startDate.getTime()) || startDate.getFullYear() < 1900) {
+      const today = new Date();
+      startTime = today.toISOString();
     }
 
     return {
@@ -206,18 +196,14 @@ export class PlanService {
 
     const todo = await response.json();
 
-    const startTime = todo.userIntendedStartTime || todo.forDate;
+    // Handle invalid dates like "0001-01-01"
+    let startTime = todo.userIntendedStartTime || todo.forDate;
     const startDate = new Date(startTime);
 
-    // Check if date is invalid, too old (before year 1900), or too far in future (> 2030)
-    const isInvalidDate =
-      isNaN(startDate.getTime()) ||
-      startDate.getFullYear() < 1900 ||
-      startDate.getFullYear() > 2030;
-
-    // Throw error for invalid dates instead of returning them
-    if (isInvalidDate) {
-      throw new Error(`Created plan has invalid date: ${startTime}`);
+    // If date is invalid or too old (before year 1900), use today's date
+    if (isNaN(startDate.getTime()) || startDate.getFullYear() < 1900) {
+      const today = new Date();
+      startTime = today.toISOString();
     }
 
     return {
@@ -459,11 +445,6 @@ export class PlanService {
       startTime
     );
     throw new Error("Plan templates not supported in ToDo API");
-  }
-
-  // New method for getting plans in date ranges (for lazy loading)
-  async getPlansInRange(startDate: string, endDate: string): Promise<Plan[]> {
-    return this.getPlans({ startDate, endDate });
   }
 }
 

@@ -364,7 +364,11 @@ export function useLazyPlans(initialDateRange: {
 
   const { data, error, isLoading, mutate } = useSWR(
     authHelpers.user ? createKey("/plans/lazy", dateRange) : null,
-    () => planService.getPlansInRange(dateRange.startDate, dateRange.endDate),
+    () =>
+      planService.getPlans({
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+      }),
     {
       revalidateOnFocus: true,
       revalidateOnReconnect: true,
