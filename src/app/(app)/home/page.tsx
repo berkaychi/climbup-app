@@ -134,6 +134,8 @@ const TimerPage = () => {
     setWorkDuration,
     startUIBreak,
     resetUIBreak,
+    notificationPermission,
+    requestNotificationPermission,
   } = useTimerLogic(
     activeFocusSession,
     sessionTypes || null,
@@ -604,6 +606,8 @@ const TimerPage = () => {
                 activeFocusSession={activeFocusSession}
                 onStartTimer={startTimer}
                 onResetTimer={resetTimer}
+                notificationPermission={notificationPermission}
+                onRequestNotificationPermission={requestNotificationPermission}
               />
             </div>
 

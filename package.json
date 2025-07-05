@@ -18,11 +18,13 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "swr": "^2.3.3",
+    "use-sound": "^5.0.0",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/howler": "^2.2.12",
     "@types/js-cookie": "^3.0.6",
     "@types/minimatch": "^5.1.2",
     "@types/node": "^20",

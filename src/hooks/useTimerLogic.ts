@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { FocusSessionResponseDto } from "../types/focusSession";
 import { SessionTypeResponseDto } from "./useSessionTypes";
+import { useNotificationSound } from "./useNotificationSound";
+import { useNotification } from "./useNotification";
 
 export const useTimerLogic = (
   activeFocusSession: FocusSessionResponseDto | null,
@@ -11,6 +13,11 @@ export const useTimerLogic = (
   onBreakComplete: () => void,
   onCustomWorkComplete: () => void
 ) => {
+  // Notification hooks
+  const { playTimerCompleteSound } = useNotificationSound();
+  const { notifyTimerComplete, permission, requestPermission } =
+    useNotification();
+
   // Timer states with safe defaults
   const [uiMinutes, setUiMinutes] = useState(25);
   const [uiSeconds, setUiSeconds] = useState(0);
@@ -48,6 +55,10 @@ export const useTimerLogic = (
           setIsRunning(false);
 
           if (activeFocusSession?.status === "Working") {
+            // Play work completion sound and show notification
+            playTimerCompleteSound("work");
+            notifyTimerComplete("work");
+
             // Check if this is a custom duration session
             if (
               !activeFocusSession.sessionTypeId &&
@@ -80,6 +91,10 @@ export const useTimerLogic = (
               onSessionComplete("workToBreak");
             }
           } else if (activeFocusSession?.status === "Break") {
+            // Play break completion sound and show notification
+            playTimerCompleteSound("break");
+            notifyTimerComplete("break");
+
             const isLastCycleBreak =
               activeFocusSession.sessionTypeId &&
               sessionTypes &&
@@ -177,6 +192,9 @@ export const useTimerLogic = (
             } else if (prevMinutes > 0) {
               return 59;
             } else {
+              // Play break completion sound and show notification for UI break
+              playTimerCompleteSound("break");
+              notifyTimerComplete("break");
               setIsUIBreakActive(false);
               onSessionComplete("customBreakComplete");
               if (intervalRef.current) {
@@ -289,6 +307,10 @@ export const useTimerLogic = (
     setWorkDuration,
     startUIBreak,
     resetUIBreak,
+
+    // Notification controls
+    notificationPermission: permission,
+    requestNotificationPermission: requestPermission,
 
     // Interval ref for cleanup
     intervalRef,
